@@ -15,4 +15,9 @@ public class controller {
     public String consultarHojas() {
         return "consultar_hojas";
     }
+    
+    @GetMapping("/Registrarusuario")
+    public String registrarUsuario() {
+        return "Registrarusuario";
+    }
 }
