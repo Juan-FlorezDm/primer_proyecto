@@ -2,7 +2,6 @@ package com.example.primer_proyecto.controllers;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -17,11 +16,17 @@ public class insertarhojavida {
 
     
     @PostMapping("/insertarhojavida")
-    public String saveUser(@RequestParam("id_user") int id_user,
+    public String saveUser(@RequestParam("cedula") int cedula,
                            @RequestParam("nombre") String nombre,
-                           @RequestParam("email") String email) {
-        String sql = "INSERT INTO HojasVida (id_user, nombre, email) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, id_user, nombre, email);
+                           @RequestParam("email") String email,
+                           @RequestParam("telefono") String telefono,
+                           @RequestParam("experiencia") int experiencia,
+                           @RequestParam("estudios") String estudios,
+                           @RequestParam("titulo") String titulo,
+                           @RequestParam("edad") int edad,
+                           @RequestParam("ciudad") String ciudad) {
+        String sql = "INSERT INTO HV (cedula, nombre, email, telefono, experiencia, titulo, estudios, edad, Ciudad) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, cedula, nombre, email, telefono, experiencia, titulo, estudios, edad, ciudad);
         return "redirect:/"; 
     }
 

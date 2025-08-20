@@ -19,7 +19,7 @@ public class conexionbd {
 
     @GetMapping("/users")
     public List<Map<String, Object>> getuser() {
-        String consulta = "select * from users";
+        String consulta = "select * from Users";
         return jdbcTemplate.queryForList(consulta);
     }
 

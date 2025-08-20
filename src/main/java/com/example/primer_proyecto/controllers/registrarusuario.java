@@ -17,13 +17,13 @@ public class registrarusuario {
 
 
     @PostMapping("/user/registro")
-    public String registrarUsuarioHandler(@RequestParam ("correo") String correo,
+    public String registrarUsuarioHandler(@RequestParam ("cedula") int cedula,
                                           @RequestParam ("nombre") String nombre,
-                                          @RequestParam ("contraseña") String contraseña){
-        
-        String registarusuario = "INSERT INTO users (nombre, email, contraseña) VALUES (?, ?, ?)";
-        jdbcTemplate.update(registarusuario, nombre, correo, contraseña);
-        return "redirect:/"; 
+                                          @RequestParam ("email") String email,
+                                          @RequestParam ("contraseña") String contraseña) {   
+        String registarusuario = "INSERT INTO Users (cedula, nombre, email, contraseña) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.update(registarusuario, cedula, nombre, email, contraseña);
+        return "redirect:/consultar_hojas"; 
     }
     
 }
