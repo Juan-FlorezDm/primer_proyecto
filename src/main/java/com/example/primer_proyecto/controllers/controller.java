@@ -12,7 +12,7 @@ public class controller {
   @GetMapping("/registrarhojavida")
     public String mostrarFormulario(Model model) {
         model.addAttribute("hojaVida", new HojaVida());
-        return "registrarhojavida"; // 👈 asegúrate que este archivo existe en templates/
+        return "registrarhojavida";
     }
 
 }

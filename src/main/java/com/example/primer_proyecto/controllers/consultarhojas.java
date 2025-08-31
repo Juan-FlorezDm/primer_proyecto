@@ -57,9 +57,9 @@ public class consultarhojas {
                 headers.setContentType(MediaType.APPLICATION_PDF);
 
                 if (ver) {
-                    headers.setContentDisposition(ContentDisposition.inline().filename(nombreArchivo).build());
+                    headers.setContentDisposition(ContentDisposition.builder("inline").filename(nombreArchivo).build());
                 } else {
-                    headers.setContentDisposition(ContentDisposition.attachment().filename(nombreArchivo).build());
+                    headers.setContentDisposition(ContentDisposition.builder("attachment").filename(nombreArchivo).build());
                 }
 
                 return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);

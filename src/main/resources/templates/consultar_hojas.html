@@ -24,16 +24,81 @@
                 <td th:text="${hv.descripcion}"></td>
                 <td th:text="${hv.estudios}"></td>
                 <td>
-                    <!-- Ver PDF en el navegador -->
-                    <a th:href="@{/hojasvida/pdf/{numero}(numero=${hv.numero}, ver=true)}" class="button">Ver</a>
-                    
-                    <!-- Descargar PDF -->
+                    <!-- Botón “Ver” con la URL -->
+                    <button type="button"
+                            class="btn-ver-pdf"
+                            th:data-url="@{/hojasvida/pdf/{numero}(numero=${hv.numero}, ver=true)}">
+                        Ver
+                    </button>
+
+                    <!-- Botón “Descargar” -->
                     <a th:href="@{/hojasvida/pdf/{numero}(numero=${hv.numero})}" class="button">Descargar</a>
-                </td>
+
+                    <!-- Contenedor del visor (inicialmente oculto) -->
+                    <div class="pdf-container"
+                        style="width:600px;height:600px;overflow:auto;border:1px solid #ddd;
+                                margin-top:8px;display:none;position:relative;padding-top:25px;">
+                        <!-- Botón de cerrar -->
+                        <button class="btn-cerrar-pdf"
+                                style="position:absolute;top:2px;right:5px;background:#c00;color:#fff;
+                                    border:none;border-radius:4px;padding:2px 6px;cursor:pointer;">
+                        ✖
+                        </button>
+                        <!-- Aquí se van a renderizar los canvases de PDF.js -->
+                        <div class="pdf-pages"></div>
+                    </div>
+                    </td>
             </tr>
         </tbody>
     </table>
 
     <a href="/">Volver al inicio</a>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const pdfjsLib = window['pdfjs-dist/build/pdf'];
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.worker.min.js';
+
+    document.querySelectorAll(".btn-ver-pdf").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const url = btn.getAttribute("data-url");
+        const container = btn.closest("td").querySelector(".pdf-container");
+        const pagesDiv = container.querySelector(".pdf-pages");
+
+        container.style.display = "block";
+        pagesDiv.innerHTML = "";
+
+        try {
+          const pdf = await pdfjsLib.getDocument(url).promise;
+          for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+            const page = await pdf.getPage(pageNum);
+            const viewport = page.getViewport({ scale: 0.8 });
+
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+
+            pagesDiv.appendChild(canvas);
+            await page.render({ canvasContext: context, viewport }).promise;
+          }
+        } catch (err) {
+          console.error("Error cargando PDF:", err);
+          pagesDiv.innerHTML = '<p style="color:#c00">No se pudo cargar el PDF.</p>';
+        }
+      });
+    });
+
+    // Cerrar visor PDF
+    document.querySelectorAll(".btn-cerrar-pdf").forEach(btnCerrar => {
+      btnCerrar.addEventListener("click", () => {
+        const container = btnCerrar.closest(".pdf-container");
+        container.style.display = "none";
+      });
+    });
+  });
+</script>
+
 </html>
