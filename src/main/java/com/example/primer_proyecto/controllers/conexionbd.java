@@ -17,18 +17,12 @@ public class conexionbd {
     }
 
 
-    @GetMapping("/users")
-    public List<Map<String, Object>> getuser() {
-        String consulta = "select * from Users";
-        return jdbcTemplate.queryForList(consulta);
-    }
-
-
     @GetMapping("/conexion")
-    public String Conexion() {
+    public Object Conexion() {
         try {
-            jdbcTemplate.execute("select * from users");
-            return "Conexión exitosaaaa";
+            String sql = "SELECT * FROM HojaVida"; 
+            List<Map<String, Object>> res = jdbcTemplate.queryForList(sql);
+            return res;
         } catch (Exception e) {
             return "No se estableció la conexión" + e.getMessage();
         }

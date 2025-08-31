@@ -1,23 +1,18 @@
 package com.example.primer_proyecto.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import com.example.primer_proyecto.model.HojaVida;
 
 @Controller
 public class controller {
 
-    @GetMapping("/registrar_hoja_vida")
-    public String registrarHojaVida() {
-        return "registrar_hoja_vida";
+  @GetMapping("/registrarhojavida")
+    public String mostrarFormulario(Model model) {
+        model.addAttribute("hojaVida", new HojaVida());
+        return "registrarhojavida"; // 👈 asegúrate que este archivo existe en templates/
     }
 
-    @GetMapping("/consultar_hojas")
-    public String consultarHojas() {
-        return "consultar_hojas";
-    }
-    
-    @GetMapping("/Registrarusuario")
-    public String registrarUsuario() {
-        return "Registrarusuario";
-    }
 }

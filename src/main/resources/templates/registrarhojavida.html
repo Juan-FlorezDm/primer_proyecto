@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Hoja de Vida</title>
+</head>
+<body>
+    <h1>Registrar Hoja de Vida</h1>
+<form th:action="@{/insertarhojavida}" method="post" 
+          enctype="multipart/form-data"
+          th:object="${hojaVida}">
+
+        <label>Nombre:</label>
+        <input type="text" th:field="*{nombre}" required>
+        <div th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+        <br>
+
+        <label>Número:</label>
+        <input type="text" th:field="*{numero}" required>
+        <div th:if="${#fields.hasErrors('numero')}" th:errors="*{numero}"></div>
+        <br>
+
+        <label>Email:</label>
+        <input type="email" th:field="*{email}" required>
+        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        <br>
+
+        <label>Descripción:</label>
+        <input type="text" th:field="*{descripcion}" required>
+        <div th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
+        <br>
+
+        <label>Estudios:</label>
+        <input type="text" th:field="*{estudios}" required>
+        <div th:if="${#fields.hasErrors('estudios')}" th:errors="*{estudios}"></div>
+        <br>
+
+        <label>Archivo PDF:</label>
+        <input type="file" name="pdf" accept="application/pdf" required><br><br>
+
+        <button type="submit">Guardar</button>
+    </form>
+
+    <a href="/">Volver Inicio</a>
+</body>
+</html>

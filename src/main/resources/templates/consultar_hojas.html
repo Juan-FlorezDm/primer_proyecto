@@ -1,12 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consultar Hojas de Vida</title>
 </head>
 <body>
-    <h1>Aca se podran consultar las hojas de vida</h1>
-    <a href="/">Volver Inicio</a>
+    <h1 style="text-align: center;">Listado de Hojas de Vida</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Número</th>
+                <th>Descripción</th>
+                <th>Estudios</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="hv : ${hojas}">
+                <td th:text="${hv.nombre}"></td>
+                <td th:text="${hv.numero}"></td>
+                <td th:text="${hv.descripcion}"></td>
+                <td th:text="${hv.estudios}"></td>
+                <td>
+                    <!-- Ver PDF en el navegador -->
+                    <a th:href="@{/hojasvida/pdf/{numero}(numero=${hv.numero}, ver=true)}" class="button">Ver</a>
+                    
+                    <!-- Descargar PDF -->
+                    <a th:href="@{/hojasvida/pdf/{numero}(numero=${hv.numero})}" class="button">Descargar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="/">Volver al inicio</a>
 </body>
 </html>
