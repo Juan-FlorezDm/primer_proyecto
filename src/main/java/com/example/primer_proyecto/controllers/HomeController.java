@@ -17,7 +17,7 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model) {
         try {
-            // Contar total de registros
+            
             String countSql = "SELECT COUNT(*) FROM HojaVida";
             Integer totalRegistros = jdbcTemplate.queryForObject(countSql, Integer.class);
             model.addAttribute("totalRegistros", totalRegistros != null ? totalRegistros : 0);
@@ -38,13 +38,10 @@ public class HomeController {
                     model.addAttribute("ultimoRegistro", "No hay registros");
                 }
             }
-            
         } catch (Exception e) {
-            // En caso de error en la conexión
             model.addAttribute("totalRegistros", 0);
             model.addAttribute("ultimoRegistro", "Error en BD");
         }
-
         return "index";
     }
 }
