@@ -1,47 +1,198 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrar Hoja de Vida</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Hoja de Vida</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <style>
+    .alert {
+        border-radius: 0.75rem;
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    .alert-success {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+        border-left: 4px solid #28a745;
+    }
+    .alert-danger {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+    .form-section {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border-radius: 1rem;
+        border-left: 4px solid #0d6efd;
+    }
+    .preview-section {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border-radius: 1rem;
+        border-left: 4px solid #6c757d;
+    }
+  </style>
 </head>
-<body>
-    <h1>Registrar Hoja de Vida</h1>
-<form th:action="@{/insertarhojavida}" method="post" 
-          enctype="multipart/form-data"
-          th:object="${hojaVida}">
+<body class="bg-light">
 
-        <label>Nombre:</label>
-        <input type="text" th:field="*{nombre}" required>
-        <div th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
-        <br>
+  <!-- NAVBAR MEJORADA (Consistente con Index) -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="/">
+        <i class="bi bi-file-earmark-person-fill me-2"></i>Gestor de Hojas de Vida
+      </a>
+      <div class="navbar-nav ms-auto">
+        <a href="/" class="btn btn-outline-light btn-sm me-2">
+          <i class="bi bi-house"></i> Inicio
+        </a>
+        <a href="/hojasvida" class="btn btn-outline-light btn-sm">
+          <i class="bi bi-list-ul"></i> Consultar
+        </a>
+      </div>
+    </div>
+  </nav>
 
-        <label>Número:</label>
-        <input type="text" th:field="*{numero}" required>
-        <div th:if="${#fields.hasErrors('numero')}" th:errors="*{numero}"></div>
-        <br>
+  <!-- MENSAJES DE FEEDBACK -->
+  <div class="container mt-3">
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  </div>
 
-        <label>Email:</label>
-        <input type="email" th:field="*{email}" required>
-        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-        <br>
+  <!-- HERO SECTION (Como el Index) -->
+  <section class="bg-primary text-white py-3 mb-4">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h2 class="fw-bold mb-0">
+            <i class="bi bi-plus-circle-fill me-2"></i>Registrar Nueva Hoja de Vida
+          </h2>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <a href="/hojasvida" class="btn btn-light btn-sm">
+            <i class="bi bi-arrow-left"></i> Volver al Listado
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <label>Descripción:</label>
-        <input type="text" th:field="*{descripcion}" required>
-        <div th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
-        <br>
+  <div class="container py-2">
+    <div class="row">
+      <!-- FORMULARIO MEJORADO -->
+      <div class="col-md-6">
+        <div class="form-section card shadow-sm p-4 h-100">
+          <h4 class="text-primary mb-4">
+            <i class="bi bi-pencil-square me-2"></i>Formulario de Registro
+          </h4>
 
-        <label>Estudios:</label>
-        <input type="text" th:field="*{estudios}" required>
-        <div th:if="${#fields.hasErrors('estudios')}" th:errors="*{estudios}"></div>
-        <br>
+          <form th:action="@{/insertarhojavida}" th:object="${hojaVida}" method="post" enctype="multipart/form-data">
 
-        <label>Archivo PDF:</label>
-        <input type="file" name="pdf" accept="application/pdf" required><br><br>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Nombre Completo *</label>
+              <input type="text" th:field="*{nombre}" id="nombre" class="form-control" placeholder="Ej: María García López" oninput="updatePreview()">
+              <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+            </div>
 
-        <button type="submit">Guardar</button>
-    </form>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Número de Teléfono *</label>
+              <input type="text" th:field="*{numero}" id="numero" class="form-control" placeholder="Ej: +573001234567" oninput="updatePreview()">
+              <div class="text-danger" th:if="${#fields.hasErrors('numero')}" th:errors="*{numero}"></div>
+            </div>
 
-    <a href="/">Volver Inicio</a>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Correo Electrónico *</label>
+              <input type="email" th:field="*{email}" id="email" class="form-control" placeholder="ejemplo@correo.com" oninput="updatePreview()">
+              <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Descripción Profesional *</label>
+              <textarea th:field="*{descripcion}" id="descripcion" class="form-control" rows="3" placeholder="Describa su experiencia y habilidades..." oninput="updatePreview()"></textarea>
+              <div class="text-danger" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Estudios y Formación *</label>
+              <textarea th:field="*{estudios}" id="estudios" class="form-control" rows="2" placeholder="Títulos, certificaciones, cursos..." oninput="updatePreview()"></textarea>
+              <div class="text-danger" th:if="${#fields.hasErrors('estudios')}" th:errors="*{estudios}"></div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-bold">Subir PDF de Hoja de Vida *</label>
+              <input type="file" name="pdf" class="form-control" accept="application/pdf" required>
+              <small class="text-muted">Solo se permiten archivos en formato PDF</small>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-success btn-lg">
+                <i class="bi bi-check-circle-fill me-2"></i> Guardar Hoja de Vida
+              </button>
+              
+              <a href="/" class="btn btn-outline-secondary">
+                <i class="bi bi-house me-2"></i> Volver al Inicio
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- VISTA PREVIA MEJORADA -->
+      <div class="col-md-6">
+        <div class="preview-section card shadow-sm p-4 h-100">
+          <h4 class="text-secondary mb-4">
+            <i class="bi bi-eye-fill me-2"></i>Vista Previa
+          </h4>
+          
+          <div class="mb-3">
+            <strong>Nombre:</strong>
+            <div class="text-primary" id="previewNombre">—</div>
+          </div>
+          
+          <div class="mb-3">
+            <strong>Número:</strong>
+            <div class="text-primary" id="previewNumero">—</div>
+          </div>
+          
+          <div class="mb-3">
+            <strong>Email:</strong>
+            <div class="text-primary" id="previewEmail">—</div>
+          </div>
+          
+          <div class="mb-3">
+            <strong>Descripción:</strong>
+            <div class="text-muted" id="previewDescripcion">—</div>
+          </div>
+          
+          <div class="mb-3">
+            <strong>Estudios:</strong>
+            <div class="text-muted" id="previewEstudios">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- SCRIPT PREVIEW -->
+  <script>
+    function updatePreview() {
+      document.getElementById("previewNombre").innerText = document.getElementById("nombre").value || "—";
+      document.getElementById("previewNumero").innerText = document.getElementById("numero").value || "—";
+      document.getElementById("previewEmail").innerText = document.getElementById("email").value || "—";
+      document.getElementById("previewDescripcion").innerText = document.getElementById("descripcion").value || "—";
+      document.getElementById("previewEstudios").innerText = document.getElementById("estudios").value || "—";
+    }
+  </script>
+
 </body>
 </html>

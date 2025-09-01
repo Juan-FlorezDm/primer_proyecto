@@ -1,14 +1,179 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><html xmlns:th="http://www.thymeleaf.org"></html>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagina</title>
-    <link rel="stylesheet" href="index.css">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestor de Hojas de Vida</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <style>
+    .hero-section {
+      background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+      color: white;
+      border-radius: 0 0 2rem 2rem;
+    }
+    .stat-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: none;
+      border-radius: 1rem;
+    }
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15) !important;
+    }
+    .btn-feature {
+      padding: 1rem 2rem;
+      font-weight: 600;
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+    }
+    .btn-feature:hover {
+      transform: scale(1.05);
+    }
+  </style>
 </head>
-<body>
-    <h1>Bienvenido a la Página</h1>
-    <a href="/registrarhojavida">Registrar Hoja de Vida</a>
-    <a href="/hojasvida">Consultar Hojas de Vida</a>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+  <!-- NAVBAR MEJORADA -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="/">
+        <i class="bi bi-file-earmark-person-fill me-2"></i>Gestor de Hojas de Vida
+      </a>
+      <div class="navbar-nav ms-auto">
+        <a href="/hojasvida" class="btn btn-outline-light btn-sm">
+          <i class="bi bi-list-ul me-1"></i>Ver Todas
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero-section py-5 mb-5">
+    <div class="container text-center py-4">
+      <h1 class="fw-bold display-4 mb-3">¡Bienvenido! 👋</h1>
+      <p class="lead mb-4 opacity-75">
+        Gestiona y organiza hojas de vida de manera profesional y eficiente
+      </p>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+            <a href="/registrarhojavida" class="btn btn-light btn-feature">
+              <i class="bi bi-plus-circle-fill me-2"></i>Nueva Hoja de Vida
+            </a>
+            <a href="/hojasvida" class="btn btn-outline-light btn-feature">
+              <i class="bi bi-search me-2"></i>Explorar Registros
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESTADÍSTICAS -->
+  <section class="container mb-5">
+    <div class="row g-4">
+      <!-- Total de Registros -->
+      <div class="col-md-4">
+        <div class="stat-card card bg-white shadow-sm text-center p-4 h-100">
+          <div class="card-body">
+            <i class="bi bi-folder-fill text-primary display-6 mb-3"></i>
+            <h3 class="text-primary" th:text="${totalRegistros != null ? totalRegistros : '0'}">0</h3>
+            <p class="text-muted mb-0">Total de Hojas de Vida</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Último Registro -->
+      <div class="col-md-4">
+        <div class="stat-card card bg-white shadow-sm text-center p-4 h-100">
+          <div class="card-body">
+            <i class="bi bi-clock-fill text-success display-6 mb-3"></i>
+            <h3 class="text-success" th:if="${ultimoRegistro != null}" th:text="${ultimoRegistro}">Nombre</h3>
+            <h3 class="text-success" th:if="${ultimoRegistro == null}">N/A</h3>
+            <p class="text-muted mb-0">Último Registro</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Acciones Rápidas -->
+      <div class="col-md-4">
+        <div class="stat-card card bg-white shadow-sm text-center p-4 h-100">
+          <div class="card-body">
+            <i class="bi bi-lightning-fill text-warning display-6 mb-3"></i>
+            <h3 class="text-warning">Acciones</h3>
+            <div class="d-grid gap-2 mt-3">
+              <a href="/registrarhojavida" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-circle"></i> Agregar
+              </a>
+              <a href="/hojasvida" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-search"></i> Buscar
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="container mb-5">
+    <div class="row text-center mb-4">
+      <div class="col">
+        <h2 class="fw-bold text-primary">¿Qué puedes hacer?</h2>
+        <p class="text-muted">Todas las funcionalidades disponibles en tu gestor</p>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center p-4">
+            <i class="bi bi-plus-circle-fill text-success display-4 mb-3"></i>
+            <h4 class="card-title">Registrar</h4>
+            <p class="card-text text-muted">Agrega nuevas hojas de vida con información completa y archivos PDF.</p>
+            <a href="/registrarhojavida" class="btn btn-outline-success mt-3">Comenzar</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center p-4">
+            <i class="bi bi-search text-info display-4 mb-3"></i>
+            <h4 class="card-title">Consultar</h4>
+            <p class="card-text text-muted">Explora y busca entre todas las hojas de vida registradas en el sistema.</p>
+            <a href="/hojasvida" class="btn btn-outline-info mt-3">Explorar</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center p-4">
+            <i class="bi bi-download text-primary display-4 mb-3"></i>
+            <h4 class="card-title">Gestionar</h4>
+            <p class="card-text text-muted">Visualiza, descarga y administra los documentos PDF de cada hoja de vida.</p>
+            <a href="/hojasvida" class="btn btn-outline-primary mt-3">Gestionar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER MEJORADO -->
+  <footer class="bg-dark text-white py-4 mt-auto">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h5 class="fw-bold">Gestor de Hojas de Vida</h5>
+          <p class="mb-0 text-muted">Sistema CRUD desarrollado con Spring Boot y Thymeleaf</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <small class="text-muted">© 2025 Proyecto Universitario - Todos los derechos reservados</small>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
