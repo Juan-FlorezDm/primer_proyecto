@@ -24,10 +24,9 @@ public class insertarhojavida {
             @Valid HojaVida hojaVida,
             BindingResult result,
             @RequestParam("pdf") MultipartFile pdf,
-            RedirectAttributes redirectAttributes) { // Cambiamos Model por RedirectAttributes
+            RedirectAttributes redirectAttributes) {
 
         if (result.hasErrors()) {
-            // Si hay errores de validación, regresamos al formulario
             return "registrarhojavida";
         }
 
@@ -43,9 +42,9 @@ public class insertarhojavida {
                     hojaVida.getEmail()
             );
             
-            // ✅ MENSAJE DE ÉXITO
+            // ✅ MENSAJE DE ÉXITO - REDIRIGIR AL INDEX TEMPORALMENTE
             redirectAttributes.addFlashAttribute("success", "✅ Hoja de vida de " + hojaVida.getNombre() + " guardada correctamente");
-            return "redirect:/hojasvida";
+            return "redirect:/"; // ← Redirigir al índice temporalmente
             
         } catch (Exception e) {
             // ❌ MENSAJE DE ERROR
