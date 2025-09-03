@@ -133,6 +133,29 @@
               <textarea th:field="*{estudios}" id="estudios" class="form-control" rows="2" placeholder="Títulos, certificaciones, cursos..." oninput="updatePreview()"></textarea>
               <div class="text-danger" th:if="${#fields.hasErrors('estudios')}" th:errors="*{estudios}"></div>
             </div>
+            <div class="mb-3">
+  <label class="form-label fw-bold">País *</label>
+  <select id="country" name="country" class="form-select" onchange="loadCitiesAndDial()">
+    <option value="">Seleccione un país</option>
+    <option th:each="p : ${paises}"
+            th:value="${p.country}"
+            th:text="${p.country}">
+    </option>
+  </select>
+</div>
+
+<div class="mb-3">
+  <label class="form-label fw-bold">Ciudad *</label>
+  <select id="city" name="city" class="form-select">
+    <option value="">Seleccione una ciudad</option>
+  </select>
+</div>
+
+<div class="mb-3">
+  <label class="form-label fw-bold">Código Telefónico</label>
+  <input type="text" id="dialCode" name="dialCode" class="form-control" readonly>
+</div>
+
 
             <div class="mb-4">
               <label class="form-label fw-bold">
@@ -206,18 +229,54 @@
   
   <!-- SCRIPT PREVIEW -->
   <script>
+
+    
     function updatePreview() {
-      document.getElementById("previewNombre").innerText = document.getElementById("nombre").value || "—";
-      document.getElementById("previewNumero").innerText = document.getElementById("numero").value || "—";
-      document.getElementById("previewEmail").innerText = document.getElementById("email").value || "—";
-      document.getElementById("previewDescripcion").innerText = document.getElementById("descripcion").value || "—";
-      document.getElementById("previewEstudios").innerText = document.getElementById("estudios").value || "—";
-    }
+  document.getElementById("previewNombre").innerText = document.getElementById("nombre").value || "—";
+  document.getElementById("previewNumero").innerText = document.getElementById("numero").value || "—";
+  document.getElementById("previewEmail").innerText = document.getElementById("email").value || "—";
+  document.getElementById("previewDescripcion").innerText = document.getElementById("descripcion").value || "—";
+  document.getElementById("previewEstudios").innerText = document.getElementById("estudios").value || "—";
+}
+
 
     // Inicializar vista previa con valores existentes
     document.addEventListener('DOMContentLoaded', function() {
       updatePreview();
     });
+
+
+    async function loadCitiesAndDial() {
+    const country = document.getElementById("country").value;
+    if (!country) return;
+
+    // cargar ciudades
+    const responseCities = await fetch(`/formulario/cuidades?pais=${country}`);
+    const cities = await responseCities.json();
+
+    const citySelect = document.getElementById("city");
+    citySelect.innerHTML = "<option value=''>Seleccione una ciudad</option>";
+
+    cities.forEach(c => {
+      const opt = document.createElement("option");
+      opt.value = c;
+      opt.textContent = c;
+      citySelect.appendChild(opt);
+    });
+
+    // cargar dial code
+    const responseDial = await fetch(`/formulario/dialcode?pais=${country}`);
+    const dial = await responseDial.text();
+    document.getElementById("dialCode").value = dial;
+
+    // actualizar vista previa del número con el prefijo
+    const numeroInput = document.getElementById("numero");
+    if (dial && !numeroInput.value.startsWith(dial)) {
+      numeroInput.value = dial + numeroInput.value.replace(/^\+\d+/, "");
+      updatePreview();
+    }
+  }
+    
   </script>
 
 </body>

@@ -6,4 +6,3 @@
 6. no poder repetir los correos
 7. validar cedulas no se pueden numeros como 0000000
 8. cambiar tabla de hojas de vida hacer una tabla para usuarios que tenga el id de la hoja de vida en la hoja de vida que tenga una relacion con el pais y la direccion
-9. 
