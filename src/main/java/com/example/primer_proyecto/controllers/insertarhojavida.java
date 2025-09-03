@@ -20,7 +20,7 @@ import com.example.primer_proyecto.model.HojaVida;
 import jakarta.validation.Valid;
 
 @Controller
-public class insertarhojavida {
+public class insertarhojavida { 
     private final JdbcTemplate jdbcTemplate;
     private final ServicioPaises servicioPaises;
 
@@ -42,38 +42,42 @@ public class insertarhojavida {
     }
 
     // 👉 Guardar Hoja de Vida
-    @PostMapping("/insertarhojavida")
-    public String saveUser(
-            @Valid HojaVida hojaVida,
-            BindingResult result,
-            @RequestParam("pdf") MultipartFile pdf,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+   @PostMapping("/insertarhojavida")
+public String saveUser(
+        @Valid HojaVida hojaVida,
+        BindingResult result,
+        @RequestParam("pdf") MultipartFile pdf,
+        @RequestParam("dialCode") String dialCode, // 👈 capturamos el prefijo
+        RedirectAttributes redirectAttributes,
+        Model model) {
 
-        if (result.hasErrors()) {
-            // si hay error, volver a mostrar países en el formulario
-            model.addAttribute("paises", servicioPaises.obtenerPaisesConCiudades());
-            return "registrarhojavida";
-        }
-
-        try {
-            String sql = "INSERT INTO HojaVida (nombre, numero, descripcion, estudios, pdf, email) VALUES (?, ?, ?, ?, ?, ?)";
-            jdbcTemplate.update(
-                    sql,
-                    hojaVida.getNombre(),
-                    hojaVida.getNumero(),
-                    hojaVida.getDescripcion(),
-                    hojaVida.getEstudios(),
-                    pdf.getBytes(),
-                    hojaVida.getEmail()
-            );
-
-            redirectAttributes.addFlashAttribute("success",
-                "✅ Hoja de vida de " + hojaVida.getNombre() + " guardada correctamente");
-            return "redirect:/hojasvida"; // redirigir al listado
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "❌ Error al guardar: " + e.getMessage());
-            return "redirect:/registrarhojavida";
-        }
+    if (result.hasErrors()) {
+        model.addAttribute("paises", servicioPaises.obtenerPaisesConCiudades());
+        return "registrarhojavida";
     }
+
+    try {
+        // Concatenamos dial + número
+        String numeroCompleto = dialCode + hojaVida.getNumero();
+
+        String sql = "INSERT INTO HojaVida (nombre, numero, descripcion, estudios, pdf, email) VALUES (?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(
+                sql,
+                hojaVida.getNombre(),
+                numeroCompleto,
+                hojaVida.getDescripcion(),
+                hojaVida.getEstudios(),
+                pdf.getBytes(),
+                hojaVida.getEmail()
+        );
+
+        redirectAttributes.addFlashAttribute("success",
+            "✅ Hoja de vida de " + hojaVida.getNombre() + " guardada correctamente");
+        return "redirect:/hojasvida";
+    } catch (Exception e) {
+        redirectAttributes.addFlashAttribute("error", "❌ Error al guardar: " + e.getMessage());
+        return "redirect:/registrarhojavida";
+    }
+}
+
 }

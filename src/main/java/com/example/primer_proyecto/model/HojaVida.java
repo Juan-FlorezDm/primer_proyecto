@@ -32,10 +32,10 @@ public class HojaVida {
 
     @NotBlank(message = "La información de email no puede estar vacía")
     @Pattern(
-    regexp = "^(?!.*(.)\\1{4,})[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
-    message = "El correo no puede contener más de 4 caracteres consecutivos iguales y debe ser válido"
-)
+    regexp = "^(?!.*(.)\\1{4,})([a-zA-Z0-9._%+-]{1,64})@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,63}$",
+    message = "El correo no es válido o contiene caracteres repetidos en exceso")
     private String email;
+
 
     public String getNombre() {
         return nombre;

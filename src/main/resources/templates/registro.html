@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario</title>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Crear Cuenta</h1>
+        </div>
+        
+        <div class="form-container">
+            <div class="error-message" th:if="${error}" th:text="${error}"></div>
+            <form action="#" th:action="@{/registro}" th:object="${validaRegistro}" method="post" id="registroForm">
+                <div class="form-group">
+                    <label for="nombre">Nombre completo</label>
+                    <input type="text" id="nombre" th:field="*{nombre}" 
+                           th:classappend="${#fields.hasErrors('nombre')} ? 'error-input' : ''"
+                           required placeholder="Ingresa tu nombre">
+                    <div class="field-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="cedula">Cédula</label>
+                    <input type="text" id="cedula" th:field="*{cedula}" 
+                           th:classappend="${#fields.hasErrors('cedula')} ? 'error-input' : ''"
+                           required placeholder="2061234567" pattern="[0-9]*" inputmode="numeric">
+                    <div class="field-error" th:if="${#fields.hasErrors('cedula')}" th:errors="*{cedula}"></div>
+                    <div class="requirements">Debe tener como minimo 3 digitos y un maximo de 10</div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Correo electrónico</label>
+                    <input type="email" id="email" th:field="*{email}" 
+                           th:classappend="${#fields.hasErrors('email')} ? 'error-input' : ''"
+                           required placeholder="ejemplo@correo.com">
+                    <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" th:field="*{password}" 
+                           th:classappend="${#fields.hasErrors('password')} ? 'error-input' : ''"
+                           required placeholder="Crea una contraseña segura">
+                    <div class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    <div class="requirements">
+                        La contraseña debe tener entre 8 y 14 caracteres, incluyendo:
+                        <ul>
+                            <li>Al menos una letra mayúscula</li>
+                            <li>Al menos una letra minúscula</li>
+                            <li>Al menos un número</li>
+                            <li>Al menos un carácter especial</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <button type="submit">Crear cuenta</button>
+            </form>
+            
+            <div class="login-link">
+                ¿Ya tienes una cuenta? <a href="/iniciarSesion">Inicia sesión</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -107,14 +107,35 @@
               <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
             </div>
 
-            <div class="mb-3">
-              <label class="form-label fw-bold">Número de Teléfono *</label>
-              <input type="text" th:field="*{numero}" id="numero" class="form-control" 
-                     th:readonly="${esEdicion != null and esEdicion}" 
-                     placeholder="Ej: +573001234567" oninput="updatePreview()">
-              <div class="text-danger" th:if="${#fields.hasErrors('numero')}" th:errors="*{numero}"></div>
-              <small th:if="${esEdicion != null and esEdicion}" class="text-muted">El número no puede ser modificado</small>
-            </div>
+
+<div class="mb-3">
+  <label class="form-label fw-bold">País *</label>
+  <select id="country" name="country" class="form-select" onchange="loadCitiesAndDial()">
+    <option value="">Seleccione un país</option>
+    <option th:each="p : ${paises}"
+            th:value="${p.country}"
+            th:text="${p.country}">
+    </option>
+  </select>
+</div>
+
+<div class="mb-3">
+  <label class="form-label fw-bold">Ciudad *</label>
+  <select id="city" name="city" class="form-select">
+    <option value="">Seleccione una ciudad</option>
+  </select>
+</div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Número de Teléfono *</label>
+        <div class="input-group">
+          <span class="input-group-text" id="dialPrefix">+</span>
+          <input type="hidden" id="dialCode" name="dialCode"> <!-- 👈 dial oculto -->
+          <input type="text" th:field="*{numero}" id="numero" class="form-control"
+                placeholder="3001234567">
+        </div>
+      </div>
+
 
             <div class="mb-3">
               <label class="form-label fw-bold">Correo Electrónico *</label>
@@ -133,28 +154,7 @@
               <textarea th:field="*{estudios}" id="estudios" class="form-control" rows="2" placeholder="Títulos, certificaciones, cursos..." oninput="updatePreview()"></textarea>
               <div class="text-danger" th:if="${#fields.hasErrors('estudios')}" th:errors="*{estudios}"></div>
             </div>
-            <div class="mb-3">
-  <label class="form-label fw-bold">País *</label>
-  <select id="country" name="country" class="form-select" onchange="loadCitiesAndDial()">
-    <option value="">Seleccione un país</option>
-    <option th:each="p : ${paises}"
-            th:value="${p.country}"
-            th:text="${p.country}">
-    </option>
-  </select>
-</div>
-
-<div class="mb-3">
-  <label class="form-label fw-bold">Ciudad *</label>
-  <select id="city" name="city" class="form-select">
-    <option value="">Seleccione una ciudad</option>
-  </select>
-</div>
-
-<div class="mb-3">
-  <label class="form-label fw-bold">Código Telefónico</label>
-  <input type="text" id="dialCode" name="dialCode" class="form-control" readonly>
-</div>
+            
 
 
             <div class="mb-4">
@@ -246,36 +246,38 @@
     });
 
 
-    async function loadCitiesAndDial() {
-    const country = document.getElementById("country").value;
-    if (!country) return;
+   async function loadCitiesAndDial() {
+  const country = document.getElementById("country").value;
+  if (!country) return;
 
-    // cargar ciudades
-    const responseCities = await fetch(`/formulario/cuidades?pais=${country}`);
-    const cities = await responseCities.json();
+  // cargar ciudades
+  const responseCities = await fetch(`/formulario/cuidades?pais=${country}`);
+  const cities = await responseCities.json();
 
-    const citySelect = document.getElementById("city");
-    citySelect.innerHTML = "<option value=''>Seleccione una ciudad</option>";
+  const citySelect = document.getElementById("city");
+  citySelect.innerHTML = "<option value=''>Seleccione una ciudad</option>";
 
-    cities.forEach(c => {
-      const opt = document.createElement("option");
-      opt.value = c;
-      opt.textContent = c;
-      citySelect.appendChild(opt);
-    });
+  cities.forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c;
+    opt.textContent = c;
+    citySelect.appendChild(opt);
+  });
 
-    // cargar dial code
-    const responseDial = await fetch(`/formulario/dialcode?pais=${country}`);
-    const dial = await responseDial.text();
-    document.getElementById("dialCode").value = dial;
+  // cargar dial
+const responseDial = await fetch(`/formulario/dialcode?pais=${country}`);
+const dial = await responseDial.text();
 
-    // actualizar vista previa del número con el prefijo
-    const numeroInput = document.getElementById("numero");
-    if (dial && !numeroInput.value.startsWith(dial)) {
-      numeroInput.value = dial + numeroInput.value.replace(/^\+\d+/, "");
-      updatePreview();
-    }
-  }
+// mostrar prefijo fijo en el span
+document.getElementById("dialPrefix").textContent = dial || "+";
+
+// guardar el dial en el input hidden
+document.getElementById("dialCode").value = dial || "+";
+
+
+  updatePreview();
+}
+
     
   </script>
 
