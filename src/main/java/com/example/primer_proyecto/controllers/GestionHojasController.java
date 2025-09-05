@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.example.primer_proyecto.model.HojaVida;
 import jakarta.validation.Valid;
 
@@ -22,18 +23,24 @@ public class GestionHojasController {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // 🎯 MOSTRAR FORMULARIO DE EDICIÓN
+    // 🎯 MOSTRAR FORMULARIO DE EDICIÓN (ACTUALIZADO)
     @GetMapping("/editar/{numero}")
     public String mostrarFormularioEdicion(@PathVariable String numero, Model model) {
         try {
-            String sql = "SELECT nombre, numero, descripcion, estudios, email FROM HojaVida WHERE numero = ?";
+            String sql = "SELECT nombre, titulo, numero, email, descripcion, experiencia, estudios, habilidades, linkedin, direccion FROM HojaVida WHERE numero = ?";
+            
             HojaVida hojaVida = jdbcTemplate.queryForObject(sql, new Object[]{numero}, (rs, rowNum) -> {
                 HojaVida hv = new HojaVida();
                 hv.setNombre(rs.getString("nombre"));
+                hv.setTitulo(rs.getString("titulo"));
                 hv.setNumero(rs.getString("numero"));
-                hv.setDescripcion(rs.getString("descripcion"));
-                hv.setEstudios(rs.getString("estudios"));
                 hv.setEmail(rs.getString("email"));
+                hv.setDescripcion(rs.getString("descripcion"));
+                hv.setExperiencia(rs.getString("experiencia"));
+                hv.setEstudios(rs.getString("estudios"));
+                hv.setHabilidades(rs.getString("habilidades"));
+                hv.setLinkedin(rs.getString("linkedin"));
+                hv.setDireccion(rs.getString("direccion"));
                 return hv;
             });
             
@@ -46,7 +53,7 @@ public class GestionHojasController {
         }
     }
 
-    // 🎯 ACTUALIZAR REGISTRO (CORREGIDO)
+    // 🎯 ACTUALIZAR REGISTRO (ACTUALIZADO)
     @PostMapping("/actualizar/{numero}")
     public String actualizarHojaVida(
             @PathVariable String numero,
@@ -54,7 +61,16 @@ public class GestionHojasController {
             BindingResult result,
             @RequestParam(value = "pdf", required = false) MultipartFile pdf,
             RedirectAttributes redirectAttributes,
-            Model model) { // ✅ AGREGADO Model model
+            Model model) {
+
+        // Validar PDF solo si se sube uno nuevo
+        if (pdf != null && !pdf.isEmpty()) {
+            if (pdf.getSize() > 5242880) {
+                result.rejectValue("pdf", "error.pdf", "El PDF no puede exceder 5MB");
+            } else if (!pdf.getContentType().equals("application/pdf")) {
+                result.rejectValue("pdf", "error.pdf", "Solo se permiten archivos PDF");
+            }
+        }
 
         if (result.hasErrors()) {
             model.addAttribute("esEdicion", true);
@@ -65,51 +81,45 @@ public class GestionHojasController {
             String sql;
             if (pdf != null && !pdf.isEmpty()) {
                 // Actualizar con nuevo PDF
-                sql = "UPDATE HojaVida SET nombre = ?, descripcion = ?, estudios = ?, pdf = ?, email = ? WHERE numero = ?";
+                sql = "UPDATE HojaVida SET nombre=?, titulo=?, email=?, descripcion=?, experiencia=?, estudios=?, habilidades=?, linkedin=?, direccion=?, pdf=? WHERE numero=?";
                 jdbcTemplate.update(sql, 
                     hojaVida.getNombre(),
-                    hojaVida.getDescripcion(),
-                    hojaVida.getEstudios(),
-                    pdf.getBytes(),
+                    hojaVida.getTitulo(),
                     hojaVida.getEmail(),
-                    numero);
+                    hojaVida.getDescripcion(),
+                    hojaVida.getExperiencia(),
+                    hojaVida.getEstudios(),
+                    hojaVida.getHabilidades(),
+                    hojaVida.getLinkedin(),
+                    hojaVida.getDireccion(),
+                    pdf.getBytes(),
+                    numero
+                );
             } else {
                 // Actualizar sin cambiar el PDF
-                sql = "UPDATE HojaVida SET nombre = ?, descripcion = ?, estudios = ?, email = ? WHERE numero = ?";
+                sql = "UPDATE HojaVida SET nombre=?, titulo=?, email=?, descripcion=?, experiencia=?, estudios=?, habilidades=?, linkedin=?, direccion=? WHERE numero=?";
                 jdbcTemplate.update(sql, 
                     hojaVida.getNombre(),
-                    hojaVida.getDescripcion(),
-                    hojaVida.getEstudios(),
+                    hojaVida.getTitulo(),
                     hojaVida.getEmail(),
-                    numero);
+                    hojaVida.getDescripcion(),
+                    hojaVida.getExperiencia(),
+                    hojaVida.getEstudios(),
+                    hojaVida.getHabilidades(),
+                    hojaVida.getLinkedin(),
+                    hojaVida.getDireccion(),
+                    numero
+                );
             }
             
-            redirectAttributes.addFlashAttribute("success", "✅ Hoja de vida de " + hojaVida.getNombre() + " actualizada correctamente");
+            redirectAttributes.addFlashAttribute("success", 
+                "✅ Hoja de vida de " + hojaVida.getNombre() + " actualizada correctamente");
             return "redirect:/hojasvida";
             
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "❌ Error al actualizar: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", 
+                "❌ Error al actualizar: " + e.getMessage());
             return "redirect:/editar/" + numero;
-        }
-    }
-
-    // 🗑️ ELIMINAR REGISTRO
-    @GetMapping("/eliminar/{numero}")
-    public String eliminarHojaVida(@PathVariable String numero, RedirectAttributes redirectAttributes) {
-        try {
-            String sql = "DELETE FROM HojaVida WHERE numero = ?";
-            int filasEliminadas = jdbcTemplate.update(sql, numero);
-            
-            if (filasEliminadas > 0) {
-                redirectAttributes.addFlashAttribute("success", "✅ Hoja de vida eliminada correctamente");
-            } else {
-                redirectAttributes.addFlashAttribute("error", "❌ No se encontró la hoja de vida para eliminar");
-            }
-            return "redirect:/hojasvida";
-            
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "❌ Error al eliminar: " + e.getMessage());
-            return "redirect:/hojasvida";
         }
     }
 }

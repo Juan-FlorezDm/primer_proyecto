@@ -29,7 +29,6 @@ public class insertarhojavida {
         this.servicioPaises = servicioPaises;
     }
 
-    // 👉 Mostrar formulario de registro con países cargados
     @GetMapping("/registrarhojavida")
     public String mostrarFormulario(Model model) {
         model.addAttribute("hojaVida", new HojaVida());
@@ -41,43 +40,69 @@ public class insertarhojavida {
         return "registrarhojavida"; // ← tu plantilla Thymeleaf
     }
 
-    // 👉 Guardar Hoja de Vida
    @PostMapping("/insertarhojavida")
-public String saveUser(
-        @Valid HojaVida hojaVida,
-        BindingResult result,
-        @RequestParam("pdf") MultipartFile pdf,
-        @RequestParam("dialCode") String dialCode, // 👈 capturamos el prefijo
-        RedirectAttributes redirectAttributes,
-        Model model) {
+    public String saveUser(
+            @Valid HojaVida hojaVida,
+            BindingResult result,
+            @RequestParam("pdf") MultipartFile pdf,
+            @RequestParam("dialCode") String dialCode, // 👈 capturamos el prefijo
+            RedirectAttributes redirectAttributes,
+            Model model) {
 
-    if (result.hasErrors()) {
-        model.addAttribute("paises", servicioPaises.obtenerPaisesConCiudades());
-        return "registrarhojavida";
+
+
+        // Validar archivo PDF
+        if (pdf.isEmpty()) {
+            result.rejectValue("pdf", "error.pdf", "El archivo PDF es requerido");
+        } else if (pdf.getSize() > 5242880) { // 5MB en bytes
+            result.rejectValue("pdf", "error.pdf", "El PDF no puede exceder 5MB");
+        } else if (!pdf.getContentType().equals("application/pdf")) {
+            result.rejectValue("pdf", "error.pdf", "Solo se permiten archivos PDF");
+        }
+    
+        if (result.hasErrors()) {
+            model.addAttribute("paises", servicioPaises.obtenerPaisesConCiudades());
+            return "registrarhojavida";
+        }
+
+            try {
+                String numeroCompleto = dialCode + hojaVida.getNumero();
+
+                byte[] pdfBytes = null;
+                if (!pdf.isEmpty()) {
+                    pdfBytes = pdf.getBytes();
+                }
+
+                String sql = "INSERT INTO HojaVida (nombre, titulo, numero, descripcion, experiencia, estudios, habilidades, pdf, email, linkedin, direccion) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                jdbcTemplate.update(sql,
+                        hojaVida.getNombre(),
+                        hojaVida.getTitulo(),
+                        numeroCompleto,
+                        hojaVida.getDescripcion(),
+                        hojaVida.getExperiencia(),
+                        hojaVida.getEstudios(),
+                        hojaVida.getHabilidades(),
+                        pdfBytes,  // 👈 puede ir NULL si no se subió archivo
+                        hojaVida.getEmail(),
+                        hojaVida.getLinkedin(),
+                        hojaVida.getDireccion()
+                );
+
+
+                redirectAttributes.addFlashAttribute("success",
+                    "✅ Hoja de vida de " + hojaVida.getNombre() + " guardada correctamente");
+
+                return "redirect:/hojasvida";
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                redirectAttributes.addFlashAttribute("error",
+                    "❌ Error al guardar: " + e.getMessage());
+                return "redirect:/registrarhojavida";
+            }
+
     }
-
-    try {
-        // Concatenamos dial + número
-        String numeroCompleto = dialCode + hojaVida.getNumero();
-
-        String sql = "INSERT INTO HojaVida (nombre, numero, descripcion, estudios, pdf, email) VALUES (?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(
-                sql,
-                hojaVida.getNombre(),
-                numeroCompleto,
-                hojaVida.getDescripcion(),
-                hojaVida.getEstudios(),
-                pdf.getBytes(),
-                hojaVida.getEmail()
-        );
-
-        redirectAttributes.addFlashAttribute("success",
-            "✅ Hoja de vida de " + hojaVida.getNombre() + " guardada correctamente");
-        return "redirect:/hojasvida";
-    } catch (Exception e) {
-        redirectAttributes.addFlashAttribute("error", "❌ Error al guardar: " + e.getMessage());
-        return "redirect:/registrarhojavida";
-    }
-}
-
 }

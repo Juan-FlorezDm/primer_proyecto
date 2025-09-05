@@ -31,12 +31,12 @@ public class control {
         model.addAttribute("paises", lista);
         return "index";
     }
-
-    @GetMapping("/cuidades")
+    @GetMapping("/ciudades")
     @ResponseBody
     public List<String> obtenerCiudades(@RequestParam String pais) {
         return servicioPaises.obtenerCiudadesPorPais(pais);
     }
+
 
    @GetMapping("/dialcode")
     @ResponseBody
@@ -46,5 +46,3 @@ public class control {
 
 
 }
-
-
