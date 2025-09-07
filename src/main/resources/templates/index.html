@@ -145,21 +145,31 @@
                 <i class="fas fa-file-alt me-2"></i>CVManager Pro
             </a>
             
-            <div class="navbar-nav ms-auto">
-                <span class="navbar-text text-white me-3">
-                    <i class="bi bi-person-circle me-1"></i>
-                    <p th:if="${#authentication != null}">
-                        Sesión iniciada como: <span th:text="${#authentication.name}">Usuario</span>
-                    </p>
+            <div class="navbar-nav ms-auto d-flex align-items-center">
+    <!-- Usuario logueado -->
+    <span class="navbar-text text-dark me-3">
+        <i class="bi bi-person-circle me-1"></i>
+        <span th:if="${#authentication != null}">
+            Sesión iniciada como: <strong th:text="${#authentication.name}">Usuario</strong>
+        </span>
+    </span>
 
-                    </span>
-                <a href="/hojasvida" class="btn btn-outline-primary me-2">
-                    <i class="fas fa-list me-1"></i>Ver Hojas
-                </a>
-                <a href="/registrarhojavida" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i>Nueva Hoja
-                </a>
-            </div>
+    <!-- Ver Hojas -->
+    <a href="/hojasvida" class="btn btn-outline-primary me-2">
+        <i class="fas fa-list me-1"></i>Ver Hojas
+    </a>
+
+    <!-- Nueva Hoja -->
+    <a href="/registrarhojavida" class="btn btn-primary me-2">
+        <i class="fas fa-plus me-1"></i>Nueva Hoja
+    </a>
+
+    <!-- Botón de Cerrar Sesión -->
+    <a href="/logout" class="btn btn-danger">
+        <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
+    </a>
+</div>
+
         </div>
     </nav>
 
