@@ -3,10 +3,14 @@ package com.example.primer_proyecto.model;
 import jakarta.validation.constraints.*;
 
 public class ValidaRegistro {
-    @NotBlank(message = "El nombre solo debe contener letras y espacios")
-    @Size(max = 50)
-    @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$", message = "El nombre solo debe contener letras y espacios")
+   @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 50, message = "El nombre no puede superar 50 caracteres")
+    @Pattern(
+        regexp = "^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)+$",
+        message = "El nombre debe tener al menos dos palabras, empezar con mayúscula y solo contener letras y espacios"
+    )
     private String nombre;
+
 
     @NotBlank(message = "La información de email no puede estar vacía")
     @Pattern(
@@ -23,9 +27,13 @@ public class ValidaRegistro {
     private String password;
 
 
-    @NotBlank(message = "La cédula es obligatoria")
-    @Pattern(regexp = "^[1-9]\\d{2,10}$", message = "La cédula debe tener entre 3 y 10 dígitos y no puede comenzar con 0")
+   @NotBlank(message = "La cédula es obligatoria")
+    @Pattern(
+        regexp = "^[1-9]\\d{5,9}$", 
+        message = "La cédula debe tener entre 6 y 10 dígitos y no puede comenzar con 0"
+    )
     private String cedula;
+
 
     public String getNombre() {
         return nombre;

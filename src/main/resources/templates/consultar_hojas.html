@@ -272,6 +272,29 @@
     
     <!-- SCRIPTS -->
     <script>
+          async function loadCitiesAndDial() {
+    const country = document.getElementById("country").value;
+    if (!country) return;
+
+    const responseCities = await fetch(`/formulario/ciudades?pais=${encodeURIComponent(country)}`);
+    const cities = await responseCities.json();
+
+    const citySelect = document.getElementById("city");
+    citySelect.innerHTML = "<option value=''>Seleccione una ciudad</option>";
+    cities.forEach(c => {
+      const opt = document.createElement("option");
+      opt.value = c;
+      opt.textContent = c;
+      citySelect.appendChild(opt);
+    });
+
+    const responseDial = await fetch(`/formulario/dialcode?pais=${encodeURIComponent(country)}`);
+    const dial = await responseDial.text();
+    document.getElementById("dialPrefix").textContent = dial || "+";
+    document.getElementById("dialCode").value = dial || "+";
+
+    updateCVPreview();
+  }
         // Función para búsqueda
         document.getElementById("buscador").addEventListener("keyup", function () {
             let filtro = this.value.toLowerCase();
