@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.primer_proyecto.model.HojaVida;
@@ -56,6 +57,7 @@ public class GestionHojasController {
             @PathVariable String numero,
             @Valid HojaVida hojaVida,
             BindingResult result,
+            @RequestParam ("dialCode") String dialcode,
             RedirectAttributes redirectAttributes,
             Model model) {
 
@@ -88,4 +90,25 @@ public class GestionHojasController {
             return "redirect:/editar/" + numero;
         }
     }
+
+    // 🎯 ELIMINAR REGISTRO
+@GetMapping("/eliminar/{numero}")
+public String eliminarHojaVida(
+        @PathVariable String numero,
+        RedirectAttributes redirectAttributes) {
+    try {
+        String sql = "DELETE FROM HojaVida WHERE numero = ?";
+        int filasAfectadas = jdbcTemplate.update(sql, numero);
+
+        if (filasAfectadas > 0) {
+            redirectAttributes.addFlashAttribute("success", "✅ Hoja de vida eliminada correctamente");
+        } else {
+            redirectAttributes.addFlashAttribute("warning", "⚠️ No se encontró la hoja de vida con número: " + numero);
+        }
+    } catch (Exception e) {
+        redirectAttributes.addFlashAttribute("error", "❌ Error al eliminar: " + e.getMessage());
+    }
+    return "redirect:/hojasvida";
+}
+
 }

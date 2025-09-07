@@ -74,7 +74,6 @@ public class insertarhojavida {
             model.addAttribute("dbError", e.getMessage());
             return "registrarhojavida";
         }
-
         return "redirect:/hojasvida";
     }
 

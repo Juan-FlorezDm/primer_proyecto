@@ -72,79 +72,70 @@
           <!-- Nombre -->
           <div class="mb-3">
             <label class="form-label">Nombre Completo *</label>
-            <input type="text" name="nombre" id="nombre" class="form-control" required oninput="updateCVPreview()">
+            <input type="text" name="nombre" id="nombre" class="form-control" required oninput="updateCVPreview(); validateNombre()">
+            <div id="error-nombre" class="text-danger small"></div>
           </div>
 
           <!-- Título Profesional -->
           <div class="mb-3">
             <label class="form-label">Título Profesional *</label>
-            <input type="text" name="titulo" id="titulo" class="form-control" required oninput="updateCVPreview()">
+            <input type="text" name="titulo" id="titulo" class="form-control" required oninput="updateCVPreview(); validateTitulo()">
+            <div id="error-titulo" class="text-danger small"></div>
           </div>
 
-          <!-- País y Ciudad -->
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">País *</label>
-              <select id="country" name="country" class="form-select" required onchange="loadCitiesAndDial(); updateCVPreview()">
-                <option value="">Seleccione un país</option>
-                <th:block th:each="pais : ${paises}">
-                  <option th:value="${pais.country}" th:text="${pais.country}"></option>
-                </th:block>
-              </select>
+          <!-- Teléfono -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Teléfono *</label>
+            <div class="input-group">
+              <span class="input-group-text" id="dialPrefix">+</span>
+              <input type="hidden" id="dialCode" name="dialCode">
+              <input type="text" name="numero" id="numero" class="form-control" required oninput="updateCVPreview(); validateNumero()">
             </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Ciudad *</label>
-              <select id="city" name="city" class="form-select" required onchange="updateCVPreview()">
-                <option value="">Seleccione una ciudad</option>
-              </select>
-            </div>
+            <div id="error-numero" class="text-danger small"></div>
           </div>
 
-          <!-- Teléfono y Email -->
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Teléfono *</label>
-              <div class="input-group">
-                <span class="input-group-text" id="dialPrefix">+</span>
-                <input type="hidden" id="dialCode" name="dialCode">
-                <input type="text" name="numero" id="numero" class="form-control" required oninput="updateCVPreview()">
-              </div>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Email *</label>
-              <input type="email" name="email" id="email" class="form-control" required oninput="updateCVPreview()">
-            </div>
+          <!-- Email -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Email *</label>
+            <input type="email" name="email" id="email" class="form-control" required oninput="updateCVPreview(); validateEmail()">
+            <div id="error-email" class="text-danger small"></div>
           </div>
 
           <!-- LinkedIn -->
           <div class="mb-3">
             <label class="form-label">LinkedIn</label>
-            <input type="url" name="linkedin" id="linkedin" class="form-control" oninput="updateCVPreview()">
+            <input type="url" name="linkedin" id="linkedin" class="form-control" oninput="updateCVPreview(); validateLinkedin()">
+            <div id="error-linkedin" class="text-danger small"></div>
           </div>
 
           <!-- Resumen -->
           <div class="mb-3">
             <label class="form-label">Resumen Profesional *</label>
-            <textarea name="descripcion" id="descripcion" class="form-control" rows="3" required oninput="updateCVPreview()"></textarea>
+            <textarea name="descripcion" id="descripcion" class="form-control" rows="3" required oninput="updateCVPreview(); validateDescripcion()"></textarea>
+            <div id="error-descripcion" class="text-danger small"></div>
           </div>
 
           <!-- Experiencia -->
           <div class="mb-3">
             <label class="form-label">Experiencia Laboral *</label>
-            <textarea name="experiencia" id="experiencia" class="form-control" rows="3" required oninput="updateCVPreview()"></textarea>
+            <textarea name="experiencia" id="experiencia" class="form-control" rows="3" required oninput="updateCVPreview(); validateExperiencia()"></textarea>
+            <div id="error-experiencia" class="text-danger small"></div>
           </div>
 
           <!-- Estudios -->
           <div class="mb-3">
             <label class="form-label">Formación Académica *</label>
-            <textarea name="estudios" id="estudios" class="form-control" rows="3" required oninput="updateCVPreview()"></textarea>
+            <textarea name="estudios" id="estudios" class="form-control" rows="3" required oninput="updateCVPreview(); validateEstudios()"></textarea>
+            <div id="error-estudios" class="text-danger small"></div>
           </div>
 
           <!-- Habilidades -->
           <div class="mb-3">
             <label class="form-label">Habilidades *</label>
-            <input type="text" name="habilidades" id="habilidades" class="form-control" required oninput="updateCVPreview()">
+            <input type="text" name="habilidades" id="habilidades" class="form-control" required oninput="updateCVPreview(); validateHabilidades()">
+            <div id="error-habilidades" class="text-danger small"></div>
           </div>
+
 
           <!-- Botón -->
           <button type="submit" class="btn btn-primary w-100">Guardar Hoja de Vida</button>
@@ -204,6 +195,108 @@
 
     document.getElementById("jsonPreview").textContent = JSON.stringify(data, null, 2);
   }
+function validateNombre() {
+  const nombre = document.getElementById("nombre").value.trim();
+  const error = document.getElementById("error-nombre");
+  const regex = /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)+$/;
+
+  if (!regex.test(nombre)) {
+    error.textContent = "Debe ingresar nombre y apellido válidos (ej: Juan Pérez).";
+    return false;
+  }
+  error.textContent = "";
+  return true;
+}
+
+function validateTitulo() {
+  const titulo = document.getElementById("titulo").value.trim();
+  const error = document.getElementById("error-titulo");
+  const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]{4,}$/;
+
+  if (!regex.test(titulo) || titulo.length < 4) {
+    error.textContent = "Ingrese un título profesional válido (ej: Ingeniero de Sistemas).";
+    return false;
+  }
+  error.textContent = "";
+  return true;
+}
+
+function validateNumero() {
+  const numero = document.getElementById("numero").value.trim();
+  const error = document.getElementById("error-numero");
+  const regex = /^[0-9]{6,15}$/;
+
+  if (!regex.test(numero)) {
+    error.textContent = "Ingrese un número válido (solo dígitos, 6 a 15 caracteres).";
+    return false;
+  }
+  error.textContent = "";
+  return true;
+}
+
+function validateEmail() {
+  const email = document.getElementById("email").value.trim();
+  const error = document.getElementById("error-email");
+  const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  if (!regex.test(email)) {
+    error.textContent = "Ingrese un correo válido (ej: usuario@dominio.com).";
+    return false;
+  }
+  error.textContent = "";
+  return true;
+}
+
+function validateLinkedin() {
+  const linkedin = document.getElementById("linkedin").value.trim();
+  const error = document.getElementById("error-linkedin");
+  const regex = /^https?:\/\/(www\.)?linkedin\.com\/.*$/;
+
+  if (linkedin && !regex.test(linkedin)) {
+    error.textContent = "Ingrese una URL de LinkedIn válida (ej: https://www.linkedin.com/in/usuario).";
+    return false;
+  }
+  error.textContent = "";
+  return true;
+}
+
+function validateDescripcion() {
+  return validateTextoLibre("descripcion", "error-descripcion");
+}
+
+function validateExperiencia() {
+  return validateTextoLibre("experiencia", "error-experiencia");
+}
+
+function validateEstudios() {
+  return validateTextoLibre("estudios", "error-estudios");
+}
+
+function validateTextoLibre(fieldId, errorId) {
+  const texto = document.getElementById(fieldId).value.trim();
+  const error = document.getElementById(errorId);
+
+  if (texto.length < 10 || /(no tengo|no soy profesional)/i.test(texto)) {
+    error.textContent = "Debe describir información real y relevante.";
+    return false;
+  }
+  error.textContent = "";
+  return true;
+}
+
+function validateHabilidades() {
+  const habilidades = document.getElementById("habilidades").value.trim();
+  const error = document.getElementById("error-habilidades");
+  const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s,]{3,}$/;
+
+  if (!regex.test(habilidades)) {
+    error.textContent = "Ingrese habilidades válidas (ej: Programación, Liderazgo).";
+    return false;
+  }
+  error.textContent = "";
+  return true;
+}
+
 </script>
 
 </body>
