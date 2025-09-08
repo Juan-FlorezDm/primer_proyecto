@@ -106,33 +106,36 @@
 </head>
 <body>
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR CORREGIDO -->
     <nav class="navbar navbar-expand-lg navbar-glass">
-        <div class="navbar-nav ms-auto d-flex align-items-center">
-    <!-- Usuario logueado -->
-    <span class="navbar-text text-dark me-3">
-        <i class="bi bi-person-circle me-1"></i>
-        <span th:if="${#authentication != null}">
-            Sesión iniciada como: <strong th:text="${#authentication.name}">Usuario</strong>
-        </span>
-    </span>
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="/">
+                <i class="fas fa-file-alt me-2"></i>CVManager
+            </a>
+            
+            <div class="navbar-nav ms-auto d-flex align-items-center">
+                <!-- Usuario logueado -->
+                <span class="navbar-text text-dark me-3" th:if="${#authentication != null}">
+                    <i class="fas fa-user me-1"></i>
+                    <span th:text="${#authentication.name}">Usuario</span>
+                </span>
 
-    <!-- Ver Hojas -->
-    <a href="/hojasvida" class="btn btn-outline-primary me-2">
-        <i class="fas fa-list me-1"></i>Ver Hojas
-    </a>
+                <!-- Ver Hojas -->
+                <a href="/hojasvida" class="btn btn-outline-primary btn-sm me-2">
+                    <i class="fas fa-list me-1"></i>Ver Hojas
+                </a>
 
-    <!-- Nueva Hoja -->
-    <a href="/registrarhojavida" class="btn btn-primary me-2">
-        <i class="fas fa-plus me-1"></i>Nueva Hoja
-    </a>
+                <!-- Nueva Hoja -->
+                <a href="/registrarhojavida" class="btn btn-primary btn-sm me-2">
+                    <i class="fas fa-plus me-1"></i>Nueva Hoja
+                </a>
 
-    <!-- Botón de Cerrar Sesión -->
-    <a href="/logout" class="btn btn-danger">
-        <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
-    </a>
-</div>
-
+                <!-- Botón de Cerrar Sesión -->
+                <a href="/logout" class="btn btn-danger btn-sm">
+                    <i class="fas fa-sign-out-alt me-1"></i>Salir
+                </a>
+            </div>
+        </div>
     </nav>
 
     <!-- HERO SECTION -->
@@ -225,6 +228,13 @@
                                             <i class="fas fa-file-export"></i>
                                         </button>
 
+                                        <!-- Botón VER (NUEVO) -->
+                                        <a th:href="@{/ver/{numero}(numero=${hoja.numero})}" 
+                                        class="btn btn-info btn-sm action-btn" 
+                                        title="Ver Detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+
                                         <!-- EDITAR -->
                                         <a th:href="@{/editar/{numero}(numero=${hoja.numero})}" 
                                         class="btn btn-primary btn-sm action-btn" 
@@ -270,29 +280,6 @@
     
     <!-- SCRIPTS -->
     <script>
-          async function loadCitiesAndDial() {
-    const country = document.getElementById("country").value;
-    if (!country) return;
-
-    const responseCities = await fetch(`/formulario/ciudades?pais=${encodeURIComponent(country)}`);
-    const cities = await responseCities.json();
-
-    const citySelect = document.getElementById("city");
-    citySelect.innerHTML = "<option value=''>Seleccione una ciudad</option>";
-    cities.forEach(c => {
-      const opt = document.createElement("option");
-      opt.value = c;
-      opt.textContent = c;
-      citySelect.appendChild(opt);
-    });
-
-    const responseDial = await fetch(`/formulario/dialcode?pais=${encodeURIComponent(country)}`);
-    const dial = await responseDial.text();
-    document.getElementById("dialPrefix").textContent = dial || "+";
-    document.getElementById("dialCode").value = dial || "+";
-
-    updateCVPreview();
-  }
         // Función para búsqueda
         document.getElementById("buscador").addEventListener("keyup", function () {
             let filtro = this.value.toLowerCase();

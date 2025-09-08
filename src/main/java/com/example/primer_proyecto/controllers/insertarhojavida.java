@@ -10,13 +10,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.primer_proyecto.DTO.CountryCities;
 import com.example.primer_proyecto.Servicios.ServicioPaises;
 import com.example.primer_proyecto.model.HojaVida;
-
 
 import jakarta.validation.Valid;
 
@@ -38,14 +36,13 @@ public class insertarhojavida {
         List<CountryCities> lista = servicioPaises.obtenerPaisesConCiudades();
         model.addAttribute("paises", lista);
 
-        return "registrarhojavida"; // ← tu plantilla Thymeleaf
+        return "registrarhojavida";
     }
-
 
     @PostMapping("/insertarhojavida")
     public String insertarHojaVida(
             @Valid @ModelAttribute("hojaVida") HojaVida hojaVida,
-            @RequestParam ("dialCode") String dialcode,
+            @RequestParam("dialCode") String dialcode,
             BindingResult result,
             Model model) {
 
@@ -56,10 +53,9 @@ public class insertarhojavida {
         String telefonoCompleto = dialcode + " " + hojaVida.getNumero();
 
         try {
-
-
+            // ✅ INSERT CORREGIDO - Agregar campo 'habilidades'
             jdbcTemplate.update(
-                "INSERT INTO HojaVida (nombre, titulo, numero, descripcion, experiencia, estudios, email, linkedin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO HojaVida (nombre, titulo, numero, descripcion, experiencia, estudios, email, linkedin, habilidades) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 hojaVida.getNombre(),
                 hojaVida.getTitulo(),
                 telefonoCompleto,
@@ -67,8 +63,10 @@ public class insertarhojavida {
                 hojaVida.getExperiencia(),
                 hojaVida.getEstudios(),
                 hojaVida.getEmail(),
-                hojaVida.getLinkedin()
+                hojaVida.getLinkedin(),
+                hojaVida.getHabilidades()  // ← ESTE FALTABA
             );
+            
         } catch (Exception e) {    
             e.printStackTrace();
             model.addAttribute("dbError", e.getMessage());
@@ -76,5 +74,4 @@ public class insertarhojavida {
         }
         return "redirect:/hojasvida";
     }
-
 }

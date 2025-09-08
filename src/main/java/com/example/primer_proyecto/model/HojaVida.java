@@ -40,6 +40,7 @@ public class HojaVida {
 
     public String getLinkedin() { return linkedin; }
     public void setLinkedin(String linkedin) { this.linkedin = linkedin; }
+
 }
 
 
