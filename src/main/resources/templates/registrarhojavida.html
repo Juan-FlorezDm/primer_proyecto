@@ -235,6 +235,22 @@
             font-weight: 500;
         }
         
+        /* Estilos para mensajes de error */
+        .error-message {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+        
+        .is-invalid {
+            border-color: var(--danger) !important;
+        }
+        
+        .is-valid {
+            border-color: var(--success) !important;
+        }
+        
         /* Animaciones */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -335,13 +351,15 @@
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Nombre Completo *</label>
                                             <input type="text" name="nombre" id="nombre" class="form-control" required 
-                                                   oninput="updatePreview()" placeholder="Juan Pérez Rodríguez">
+                                                   oninput="validateNombre(); updatePreview()" placeholder="Juan Pérez Rodríguez">
+                                            <span id="error-nombre" class="error-message"></span>
                                         </div>
                                         
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Título Profesional *</label>
                                             <input type="text" name="titulo" id="titulo" class="form-control" required 
-                                                   oninput="updatePreview()" placeholder="Ingeniero de Sistemas">
+                                                   oninput="validateTitulo(); updatePreview()" placeholder="Ingeniero de Sistemas">
+                                            <span id="error-titulo" class="error-message"></span>
                                         </div>
                                     </div>
 
@@ -361,8 +379,9 @@
                                             <div class="input-group">
                                                 <span class="input-group-text" id="dialPrefix">+</span>
                                                 <input type="text" name="numero" id="numero" class="form-control" required 
-                                                       oninput="updatePreview()" placeholder="3001234567">
+                                                       oninput="validateNumero(); updatePreview()" placeholder="3001234567">
                                             </div>
+                                            <span id="error-numero" class="error-message"></span>
                                             <input type="hidden" id="dialCode" name="dialCode" value="+">
                                         </div>
                                     </div>
@@ -371,25 +390,28 @@
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Email *</label>
                                             <input type="email" name="email" id="email" class="form-control" required 
-                                                   oninput="updatePreview()" placeholder="ejemplo@correo.com">
+                                                   oninput="validateEmail(); updatePreview()" placeholder="ejemplo@correo.com">
+                                            <span id="error-email" class="error-message"></span>
                                         </div>
                                         
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">LinkedIn (opcional)</label>
                                             <input type="url" name="linkedin" id="linkedin" class="form-control" 
-                                                   oninput="updatePreview()" placeholder="https://linkedin.com/in/usuario">
+                                                   oninput="validateLinkedin(); updatePreview()" placeholder="https://linkedin.com/in/usuario">
+                                            <span id="error-linkedin" class="error-message"></span>
                                         </div>
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="form-label">Resumen Profesional *</label>
                                         <textarea name="descripcion" id="descripcion" class="form-control" rows="3" required 
-                                                  oninput="updatePreview()" placeholder="Describa su experiencia, habilidades y objetivos profesionales..."></textarea>
+                                                  oninput="validateDescripcion(); updatePreview()" placeholder="Describa su experiencia, habilidades y objetivos profesionales..."></textarea>
+                                        <span id="error-descripcion" class="error-message"></span>
                                     </div>
                                 </div>
                                 
                                 <div class="text-end">
-                                    <button type="button" class="btn btn-primary" onclick="switchTab('experience')">
+                                    <button type="button" class="btn btn-primary" onclick="validatePersonalTab()">
                                         Siguiente <i class="fas fa-arrow-right ms-2"></i>
                                     </button>
                                 </div>
@@ -405,35 +427,40 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Empresa *</label>
-                                            <input type="text" name="empresa" class="form-control" required 
-                                                   oninput="updatePreview()" placeholder="Nombre de la empresa">
+                                            <input type="text" name="empresa" id="empresa" class="form-control" required 
+                                                   oninput="validateEmpresa(); updatePreview()" placeholder="Nombre de la empresa">
+                                            <span id="error-empresa" class="error-message"></span>
                                         </div>
                                         
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Cargo *</label>
-                                            <input type="text" name="cargo" class="form-control" required 
-                                                   oninput="updatePreview()" placeholder="Cargo ocupado">
+                                            <input type="text" name="cargo" id="cargo" class="form-control" required 
+                                                   oninput="validateCargo(); updatePreview()" placeholder="Cargo ocupado">
+                                            <span id="error-cargo" class="error-message"></span>
                                         </div>
                                     </div>
                                     
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Fecha Inicio *</label>
-                                            <input type="month" name="fechaInicio" class="form-control" required 
-                                                   oninput="updatePreview()" max="" onfocus="setMaxDate(this)">
+                                            <input type="month" name="fechaInicio" id="fechaInicio" class="form-control" required 
+                                                   oninput="validateFechaInicio(); updatePreview()" max="" onfocus="setMaxDate(this)">
+                                            <span id="error-fechaInicio" class="error-message"></span>
                                         </div>
                                         
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Fecha Fin (opcional)</label>
-                                            <input type="month" name="fechaFin" class="form-control" 
-                                                   oninput="updatePreview()" max="" onfocus="setMaxDate(this)" placeholder="Si es actual, deje vacío">
+                                            <input type="month" name="fechaFin" id="fechaFin" class="form-control" 
+                                                   oninput="validateFechaFin(); updatePreview()" max="" onfocus="setMaxDate(this)" placeholder="Si es actual, deje vacío">
+                                            <span id="error-fechaFin" class="error-message"></span>
                                         </div>
                                     </div>
                                     
                                     <div class="mb-3">
                                         <label class="form-label">Descripción *</label>
-                                        <textarea name="descExperiencia" class="form-control" rows="3" required 
-                                                  oninput="updatePreview()" placeholder="Principales responsabilidades, logros y habilidades utilizadas..."></textarea>
+                                        <textarea name="descExperiencia" id="descExperiencia" class="form-control" rows="3" required 
+                                                  oninput="validateExperiencia(); updatePreview()" placeholder="Principales responsabilidades, logros y habilidades utilizadas..."></textarea>
+                                        <span id="error-descExperiencia" class="error-message"></span>
                                     </div>
                                 </div>
                                 
@@ -441,7 +468,7 @@
                                     <button type="button" class="btn btn-outline-primary" onclick="switchTab('personal')">
                                         <i class="fas fa-arrow-left me-2"></i>Anterior
                                     </button>
-                                    <button type="button" class="btn btn-primary" onclick="switchTab('education')">
+                                    <button type="button" class="btn btn-primary" onclick="validateExperienceTab()">
                                         Siguiente <i class="fas fa-arrow-right ms-2"></i>
                                     </button>
                                 </div>
@@ -457,28 +484,32 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Institución *</label>
-                                            <input type="text" name="institucion" class="form-control" required 
-                                                   oninput="updatePreview()" placeholder="Universidad o institución">
+                                            <input type="text" name="institucion" id="institucion" class="form-control" required 
+                                                   oninput="validateInstitucion(); updatePreview()" placeholder="Universidad o institución">
+                                            <span id="error-institucion" class="error-message"></span>
                                         </div>
                                         
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Título Obtenido *</label>
-                                            <input type="text" name="tituloEstudio" class="form-control" required 
-                                                   oninput="updatePreview()" placeholder="Título académico">
+                                            <input type="text" name="tituloEstudio" id="tituloEstudio" class="form-control" required 
+                                                   oninput="validateTituloEstudio(); updatePreview()" placeholder="Título académico">
+                                            <span id="error-tituloEstudio" class="error-message"></span>
                                         </div>
                                     </div>
                                     
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Fecha Inicio *</label>
-                                            <input type="month" name="fechaInicioEstudio" class="form-control" required 
-                                                   oninput="updatePreview()" max="" onfocus="setMaxDate(this)">
+                                            <input type="month" name="fechaInicioEstudio" id="fechaInicioEstudio" class="form-control" required 
+                                                   oninput="validateFechaInicioEstudio(); updatePreview()" max="" onfocus="setMaxDate(this)">
+                                            <span id="error-fechaInicioEstudio" class="error-message"></span>
                                         </div>
                                         
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Fecha Fin *</label>
-                                            <input type="month" name="fechaFinEstudio" class="form-control" required 
-                                                   oninput="updatePreview()" max="" onfocus="setMaxDate(this)">
+                                            <input type="month" name="fechaFinEstudio" id="fechaFinEstudio" class="form-control" required 
+                                                   oninput="validateFechaFinEstudio(); updatePreview()" max="" onfocus="setMaxDate(this)">
+                                            <span id="error-fechaFinEstudio" class="error-message"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -487,7 +518,7 @@
                                     <button type="button" class="btn btn-outline-primary" onclick="switchTab('experience')">
                                         <i class="fas fa-arrow-left me-2"></i>Anterior
                                     </button>
-                                    <button type="button" class="btn btn-primary" onclick="switchTab('skills')">
+                                    <button type="button" class="btn btn-primary" onclick="validateEducationTab()">
                                         Siguiente <i class="fas fa-arrow-right ms-2"></i>
                                     </button>
                                 </div>
@@ -503,7 +534,8 @@
                                     <div class="mb-3">
                                         <label class="form-label">Habilidades * (separadas por coma)</label>
                                         <input type="text" name="habilidades" id="habilidades" class="form-control" required 
-                                               oninput="updatePreview()" placeholder="Ej: Java, Spring Boot, MySQL, React, Liderazgo, Trabajo en equipo">
+                                               oninput="validateHabilidades(); updatePreview()" placeholder="Ej: Java, Spring Boot, MySQL, React, Liderazgo, Trabajo en equipo">
+                                        <span id="error-habilidades" class="error-message"></span>
                                         <div class="form-text">Liste sus principales habilidades técnicas y blandas</div>
                                     </div>
                                 </div>
@@ -512,7 +544,7 @@
                                     <button type="button" class="btn btn-outline-primary" onclick="switchTab('education')">
                                         <i class="fas fa-arrow-left me-2"></i>Anterior
                                     </button>
-                                    <button type="submit" class="btn btn-success">
+                                    <button type="submit" class="btn btn-success" onclick="return validateAll()">
                                         <i class="fas fa-save me-2"></i>Guardar Hoja de Vida
                                     </button>
                                 </div>
@@ -572,6 +604,456 @@
             'India': 'in'
         };
 
+        // FUNCIONES DE VALIDACIÓN PROPORCIONADAS
+        function validateNombre() {
+            const nombre = document.getElementById("nombre").value.trim();
+            const error = document.getElementById("error-nombre");
+            const regex = /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)+$/;
+
+            if (!regex.test(nombre)) {
+                error.textContent = "Debe ingresar nombre y apellido válidos (ej: Juan Pérez).";
+                document.getElementById("nombre").classList.add("is-invalid");
+                document.getElementById("nombre").classList.remove("is-valid");
+                return false;
+            }
+            error.textContent = "";
+            document.getElementById("nombre").classList.remove("is-invalid");
+            document.getElementById("nombre").classList.add("is-valid");
+            return true;
+        }
+
+        function validateTitulo() {
+            const titulo = document.getElementById("titulo").value.trim();
+            const error = document.getElementById("error-titulo");
+            const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]{4,}$/;
+
+            if (!regex.test(titulo) || titulo.length < 4) {
+                error.textContent = "Ingrese un título profesional válido (ej: Ingeniero de Sistemas).";
+                document.getElementById("titulo").classList.add("is-invalid");
+                document.getElementById("titulo").classList.remove("is-valid");
+                return false;
+            }
+            error.textContent = "";
+            document.getElementById("titulo").classList.remove("is-invalid");
+            document.getElementById("titulo").classList.add("is-valid");
+            return true;
+        }
+
+        function validateNumero() {
+            const numero = document.getElementById("numero").value.trim();
+            const error = document.getElementById("error-numero");
+            const regex = /^[0-9]{6,15}$/;
+
+            if (!regex.test(numero)) {
+                error.textContent = "Ingrese un número válido (solo dígitos, 6 a 15 caracteres).";
+                document.getElementById("numero").classList.add("is-invalid");
+                document.getElementById("numero").classList.remove("is-valid");
+                return false;
+            }
+            error.textContent = "";
+            document.getElementById("numero").classList.remove("is-invalid");
+            document.getElementById("numero").classList.add("is-valid");
+            return true;
+        }
+
+        function validateEmail() {
+            const email = document.getElementById("email").value.trim();
+            const error = document.getElementById("error-email");
+            // Expresión regular mejorada según los requisitos específicos
+            const regex = /^[a-zA-Z]{3,}@[a-zA-Z]+\.[a-zA-Z]{2,3}$/;
+
+            if (!regex.test(email)) {
+                error.textContent = "Formato de email inválido. Debe tener mínimo 3 letras antes del @, dominio sin números y después del punto entre 2 y 3 letras (ej: usuario@dominio.com).";
+                document.getElementById("email").classList.add("is-invalid");
+                document.getElementById("email").classList.remove("is-valid");
+                return false;
+            }
+            error.textContent = "";
+            document.getElementById("email").classList.remove("is-invalid");
+            document.getElementById("email").classList.add("is-valid");
+            return true;
+        }
+
+        function validateLinkedin() {
+            const linkedin = document.getElementById("linkedin").value.trim();
+            const error = document.getElementById("error-linkedin");
+            const regex = /^https?:\/\/(www\.)?linkedin\.com\/.*$/;
+
+            if (linkedin && !regex.test(linkedin)) {
+                error.textContent = "Ingrese una URL de LinkedIn válida (ej: https://www.linkedin.com/in/usuario).";
+                document.getElementById("linkedin").classList.add("is-invalid");
+                document.getElementById("linkedin").classList.remove("is-valid");
+                return false;
+            }
+            error.textContent = "";
+            document.getElementById("linkedin").classList.remove("is-invalid");
+            if (linkedin) document.getElementById("linkedin").classList.add("is-valid");
+            return true;
+        }
+
+        function validateDescripcion() {
+            return validateTextoLibre("descripcion", "error-descripcion");
+        }
+
+        function validateExperiencia() {
+            return validateTextoLibre("descExperiencia", "error-descExperiencia");
+        }
+
+        function validateTextoLibre(fieldId, errorId) {
+            const texto = document.getElementById(fieldId).value.trim();
+            const error = document.getElementById(errorId);
+
+            if (texto.length < 10 || /(no tengo|no soy profesional)/i.test(texto)) {
+                error.textContent = "Debe describir información real y relevante (mínimo 10 caracteres).";
+                document.getElementById(fieldId).classList.add("is-invalid");
+                document.getElementById(fieldId).classList.remove("is-valid");
+                return false;
+            }
+            error.textContent = "";
+            document.getElementById(fieldId).classList.remove("is-invalid");
+            document.getElementById(fieldId).classList.add("is-valid");
+            return true;
+        }
+
+        function validateHabilidades() {
+            const habilidades = document.getElementById("habilidades").value.trim();
+            const error = document.getElementById("error-habilidades");
+            const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s,]{3,}$/;
+
+            if (!regex.test(habilidades)) {
+                error.textContent = "Ingrese habilidades válidas (ej: Programación, Liderazgo).";
+                document.getElementById("habilidades").classList.add("is-invalid");
+                document.getElementById("habilidades").classList.remove("is-valid");
+                return false;
+            }
+            error.textContent = "";
+            document.getElementById("habilidades").classList.remove("is-invalid");
+            document.getElementById("habilidades").classList.add("is-valid");
+            return true;
+        }
+
+        // VALIDACIONES ADICIONALES PROFESIONALES
+        function validateEmpresa() {
+            const empresa = document.getElementById("empresa").value.trim();
+            const error = document.getElementById("error-empresa");
+            const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ0-9\s&.,\-()]{2,}$/;
+            
+            if (!regex.test(empresa) || empresa.length < 2) {
+                error.textContent = "Ingrese un nombre de empresa válido (mínimo 2 caracteres, solo letras, números y caracteres especiales básicos).";
+                document.getElementById("empresa").classList.add("is-invalid");
+                document.getElementById("empresa").classList.remove("is-valid");
+                return false;
+            }
+            error.textContent = "";
+            document.getElementById("empresa").classList.remove("is-invalid");
+            document.getElementById("empresa").classList.add("is-valid");
+            return true;
+        }
+
+        function validateCargo() {
+            const cargo = document.getElementById("cargo").value.trim();
+            const error = document.getElementById("error-cargo");
+            const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s\-()]{3,}$/;
+            
+            if (!regex.test(cargo) || cargo.length < 3) {
+                error.textContent = "Ingrese un cargo válido (mínimo 3 caracteres, solo letras y espacios).";
+                document.getElementById("cargo").classList.add("is-invalid");
+                document.getElementById("cargo").classList.remove("is-valid");
+                return false;
+            }
+            error.textContent = "";
+            document.getElementById("cargo").classList.remove("is-invalid");
+            document.getElementById("cargo").classList.add("is-valid");
+            return true;
+        }
+
+        function validateFechaInicio() {
+            const fechaInicio = document.getElementById("fechaInicio").value;
+            const error = document.getElementById("error-fechaInicio");
+            
+            if (!fechaInicio) {
+                error.textContent = "Seleccione una fecha de inicio.";
+                document.getElementById("fechaInicio").classList.add("is-invalid");
+                document.getElementById("fechaInicio").classList.remove("is-valid");
+                return false;
+            }
+            
+            // Validar que la fecha no sea mayor a 60 años en el pasado
+            const selectedDate = new Date(fechaInicio);
+            const currentDate = new Date();
+            const maxPastDate = new Date();
+            maxPastDate.setFullYear(currentDate.getFullYear() - 60);
+            
+            if (selectedDate < maxPastDate) {
+                error.textContent = "La fecha de inicio no puede ser hace más de 60 años.";
+                document.getElementById("fechaInicio").classList.add("is-invalid");
+                document.getElementById("fechaInicio").classList.remove("is-valid");
+                return false;
+            }
+            
+            if (selectedDate > currentDate) {
+                error.textContent = "La fecha de inicio no puede ser futura.";
+                document.getElementById("fechaInicio").classList.add("is-invalid");
+                document.getElementById("fechaInicio").classList.remove("is-valid");
+                return false;
+            }
+            
+            error.textContent = "";
+            document.getElementById("fechaInicio").classList.remove("is-invalid");
+            document.getElementById("fechaInicio").classList.add("is-valid");
+            return true;
+        }
+
+        function validateFechaFin() {
+            const fechaFin = document.getElementById("fechaFin").value;
+            const fechaInicio = document.getElementById("fechaInicio").value;
+            const error = document.getElementById("error-fechaFin");
+            
+            // Si no hay fecha fin, es válido (trabajo actual)
+            if (!fechaFin) {
+                error.textContent = "";
+                document.getElementById("fechaFin").classList.remove("is-invalid");
+                document.getElementById("fechaFin").classList.remove("is-valid");
+                return true;
+            }
+            
+            const finDate = new Date(fechaFin);
+            const inicioDate = new Date(fechaInicio);
+            const currentDate = new Date();
+            
+            if (fechaFin && fechaInicio && finDate < inicioDate) {
+                error.textContent = "La fecha fin no puede ser anterior a la fecha inicio.";
+                document.getElementById("fechaFin").classList.add("is-invalid");
+                document.getElementById("fechaFin").classList.remove("is-valid");
+                return false;
+            }
+            
+            if (finDate > currentDate) {
+                error.textContent = "La fecha fin no puede ser futura.";
+                document.getElementById("fechaFin").classList.add("is-invalid");
+                document.getElementById("fechaFin").classList.remove("is-valid");
+                return false;
+            }
+            
+            // Validar que la experiencia no dure más de 60 años
+            const diffTime = Math.abs(finDate - inicioDate);
+            const diffYears = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 365));
+            
+            if (diffYears > 60) {
+                error.textContent = "La experiencia no puede durar más de 60 años.";
+                document.getElementById("fechaFin").classList.add("is-invalid");
+                document.getElementById("fechaFin").classList.remove("is-valid");
+                return false;
+            }
+            
+            error.textContent = "";
+            document.getElementById("fechaFin").classList.remove("is-invalid");
+            document.getElementById("fechaFin").classList.add("is-valid");
+            return true;
+        }
+
+        function validateInstitucion() {
+            const institucion = document.getElementById("institucion").value.trim();
+            const error = document.getElementById("error-institucion");
+            const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ0-9\s&.,\-()]{2,}$/;
+            
+            if (!regex.test(institucion) || institucion.length < 2) {
+                error.textContent = "Ingrese un nombre de institución válido (mínimo 2 caracteres).";
+                document.getElementById("institucion").classList.add("is-invalid");
+                document.getElementById("institucion").classList.remove("is-valid");
+                return false;
+            }
+            error.textContent = "";
+            document.getElementById("institucion").classList.remove("is-invalid");
+            document.getElementById("institucion").classList.add("is-valid");
+            return true;
+        }
+
+        function validateTituloEstudio() {
+            const tituloEstudio = document.getElementById("tituloEstudio").value.trim();
+            const error = document.getElementById("error-tituloEstudio");
+            const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s\-()]{4,}$/;
+            
+            if (!regex.test(tituloEstudio) || tituloEstudio.length < 4) {
+                error.textContent = "Ingrese un título de estudio válido (mínimo 4 caracteres, solo letras y espacios).";
+                document.getElementById("tituloEstudio").classList.add("is-invalid");
+                document.getElementById("tituloEstudio").classList.remove("is-valid");
+                return false;
+            }
+            error.textContent = "";
+            document.getElementById("tituloEstudio").classList.remove("is-invalid");
+            document.getElementById("tituloEstudio").classList.add("is-valid");
+            return true;
+        }
+
+        function validateFechaInicioEstudio() {
+            const fechaInicioEstudio = document.getElementById("fechaInicioEstudio").value;
+            const error = document.getElementById("error-fechaInicioEstudio");
+            
+            if (!fechaInicioEstudio) {
+                error.textContent = "Seleccione una fecha de inicio.";
+                document.getElementById("fechaInicioEstudio").classList.add("is-invalid");
+                document.getElementById("fechaInicioEstudio").classList.remove("is-valid");
+                return false;
+            }
+            
+            // Validar que la fecha no sea mayor a 80 años en el pasado (para estudios)
+            const selectedDate = new Date(fechaInicioEstudio);
+            const currentDate = new Date();
+            const maxPastDate = new Date();
+            maxPastDate.setFullYear(currentDate.getFullYear() - 80);
+            
+            if (selectedDate < maxPastDate) {
+                error.textContent = "La fecha de inicio no puede ser hace más de 80 años.";
+                document.getElementById("fechaInicioEstudio").classList.add("is-invalid");
+                document.getElementById("fechaInicioEstudio").classList.remove("is-valid");
+                return false;
+            }
+            
+            if (selectedDate > currentDate) {
+                error.textContent = "La fecha de inicio no puede ser futura.";
+                document.getElementById("fechaInicioEstudio").classList.add("is-invalid");
+                document.getElementById("fechaInicioEstudio").classList.remove("is-valid");
+                return false;
+            }
+            
+            error.textContent = "";
+            document.getElementById("fechaInicioEstudio").classList.remove("is-invalid");
+            document.getElementById("fechaInicioEstudio").classList.add("is-valid");
+            return true;
+        }
+
+        function validateFechaFinEstudio() {
+            const fechaFinEstudio = document.getElementById("fechaFinEstudio").value;
+            const fechaInicioEstudio = document.getElementById("fechaInicioEstudio").value;
+            const error = document.getElementById("error-fechaFinEstudio");
+            
+            if (!fechaFinEstudio) {
+                error.textContent = "Seleccione una fecha de fin.";
+                document.getElementById("fechaFinEstudio").classList.add("is-invalid");
+                document.getElementById("fechaFinEstudio").classList.remove("is-valid");
+                return false;
+            }
+            
+            const finDate = new Date(fechaFinEstudio);
+            const inicioDate = new Date(fechaInicioEstudio);
+            const currentDate = new Date();
+            
+            if (finDate < inicioDate) {
+                error.textContent = "La fecha fin no puede ser anterior a la fecha inicio.";
+                document.getElementById("fechaFinEstudio").classList.add("is-invalid");
+                document.getElementById("fechaFinEstudio").classList.remove("is-valid");
+                return false;
+            }
+            
+            if (finDate > currentDate) {
+                error.textContent = "La fecha fin no puede ser futura.";
+                document.getElementById("fechaFinEstudio").classList.add("is-invalid");
+                document.getElementById("fechaFinEstudio").classList.remove("is-valid");
+                return false;
+            }
+            
+            // Validar que el estudio no dure más de 15 años (para carreras muy largas)
+            const diffTime = Math.abs(finDate - inicioDate);
+            const diffYears = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 365));
+            
+            if (diffYears > 15) {
+                error.textContent = "El período de estudio no puede durar más de 15 años.";
+                document.getElementById("fechaFinEstudio").classList.add("is-invalid");
+                document.getElementById("fechaFinEstudio").classList.remove("is-valid");
+                return false;
+            }
+            
+            error.textContent = "";
+            document.getElementById("fechaFinEstudio").classList.remove("is-invalid");
+            document.getElementById("fechaFinEstudio").classList.add("is-valid");
+            return true;
+        }
+
+        // VALIDACIÓN DE PESTAÑAS COMPLETAS
+        function validatePersonalTab() {
+            const isValid = validateNombre() && validateTitulo() && validateNumero() && 
+                          validateEmail() && validateLinkedin() && validateDescripcion();
+            
+            if (isValid) {
+                switchTab('experience');
+            } else {
+                // Mostrar mensaje de error general
+                alert("Por favor, complete correctamente todos los campos obligatorios.");
+                // Scroll al primer error
+                const firstError = document.querySelector('.is-invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+            return isValid;
+        }
+
+        function validateExperienceTab() {
+            const isValid = validateEmpresa() && validateCargo() && validateFechaInicio() && 
+                          validateFechaFin() && validateExperiencia();
+            
+            if (isValid) {
+                switchTab('education');
+            } else {
+                alert("Por favor, complete correctamente todos los campos obligatorios.");
+                const firstError = document.querySelector('.is-invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+            return isValid;
+        }
+
+        function validateEducationTab() {
+            const isValid = validateInstitucion() && validateTituloEstudio() && 
+                          validateFechaInicioEstudio() && validateFechaFinEstudio();
+            
+            if (isValid) {
+                switchTab('skills');
+            } else {
+                alert("Por favor, complete correctamente todos los campos obligatorios.");
+                const firstError = document.querySelector('.is-invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+            return isValid;
+        }
+
+        // VALIDACIÓN COMPLETA DEL FORMULARIO
+        function validateAll() {
+            const personalValid = validateNombre() && validateTitulo() && validateNumero() && 
+                                validateEmail() && validateLinkedin() && validateDescripcion();
+            const experienceValid = validateEmpresa() && validateCargo() && validateFechaInicio() && 
+                                  validateFechaFin() && validateExperiencia();
+            const educationValid = validateInstitucion() && validateTituloEstudio() && 
+                                 validateFechaInicioEstudio() && validateFechaFinEstudio();
+            const skillsValid = validateHabilidades();
+            
+            if (personalValid && experienceValid && educationValid && skillsValid) {
+                return true;
+            } else {
+                alert("Por favor, complete correctamente todos los campos obligatorios antes de enviar.");
+                // Ir a la primera pestaña con error
+                if (!personalValid) switchTab('personal');
+                else if (!experienceValid) switchTab('experience');
+                else if (!educationValid) switchTab('education');
+                else if (!skillsValid) switchTab('skills');
+                
+                // Scroll al primer error
+                setTimeout(() => {
+                    const firstError = document.querySelector('.is-invalid');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 300);
+                
+                return false;
+            }
+        }
+
+        // FUNCIONES EXISTENTES
         // Cambiar entre pestañas
         function switchTab(tabId) {
             const tab = new bootstrap.Tab(document.getElementById(tabId + '-tab'));
@@ -591,7 +1073,7 @@
             input.setAttribute('min', minDateStr);
         }
 
-        // Cargar código de teléfono
+        // Cargar código de teléfono (USO DE API)
         async function loadDialCode() {
             const country = document.getElementById("country").value;
             if (!country) return;
@@ -674,17 +1156,17 @@
                 <div class="preview-section">
                     <div class="preview-section-title">Experiencia Laboral</div>
                     <div class="preview-content">
-                        <p><strong>${document.querySelector('input[name="empresa"]').value || 'Nombre de Empresa'}</strong></p>
-                        <p><em>${document.querySelector('input[name="cargo"]').value || 'Cargo Ocupado'} | ${document.querySelector('input[name="fechaInicio"]').value || 'Fecha Inicio'} - ${document.querySelector('input[name="fechaFin"]').value || 'Presente'}</em></p>
-                        <p>${document.querySelector('textarea[name="descExperiencia"]').value || 'Descripción de responsabilidades y logros...'}</p>
+                        <p><strong>${document.getElementById('empresa').value || 'Nombre de Empresa'}</strong></p>
+                        <p><em>${document.getElementById('cargo').value || 'Cargo Ocupado'} | ${document.getElementById('fechaInicio').value || 'Fecha Inicio'} - ${document.getElementById('fechaFin').value || 'Presente'}</em></p>
+                        <p>${document.getElementById('descExperiencia').value || 'Descripción de responsabilidades y logros...'}</p>
                     </div>
                 </div>
                 
                 <div class="preview-section">
                     <div class="preview-section-title">Formación Académica</div>
                     <div class="preview-content">
-                        <p><strong>${document.querySelector('input[name="institucion"]').value || 'Nombre de Institución'}</strong></p>
-                        <p><em>${document.querySelector('input[name="tituloEstudio"]').value || 'Título Obtenido'} | ${document.querySelector('input[name="fechaInicioEstudio"]').value || 'Fecha Inicio'} - ${document.querySelector('input[name="fechaFinEstudio"]').value || 'Fecha Fin'}</em></p>
+                        <p><strong>${document.getElementById('institucion').value || 'Nombre de Institución'}</strong></p>
+                        <p><em>${document.getElementById('tituloEstudio').value || 'Título Obtenido'} | ${document.getElementById('fechaInicioEstudio').value || 'Fecha Inicio'} - ${document.getElementById('fechaFinEstudio').value || 'Fecha Fin'}</em></p>
                     </div>
                 </div>
                 

@@ -115,6 +115,46 @@
             box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
         }
         
+        /* Estilos para la sección de tips */
+        .tips-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .tip-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .tip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tip-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .tip-title {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+        }
+        
+        .tip-content {
+            color: #555;
+            flex-grow: 1;
+        }
+        
         /* Animaciones */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -134,6 +174,10 @@
             .stat-card {
                 margin-bottom: 1rem;
             }
+            
+            .tips-container {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -146,63 +190,96 @@
             </a>
             
             <div class="navbar-nav ms-auto d-flex align-items-center">
-    <!-- Usuario logueado -->
-    <span class="navbar-text text-dark me-3">
-        <i class="bi bi-person-circle me-1"></i>
-        <span th:if="${#authentication != null}">
-            Sesión iniciada como: <strong th:text="${#authentication.name}">Usuario</strong>
-        </span>
-    </span>
+                <!-- Usuario logueado -->
+                <span class="navbar-text text-dark me-3">
+                    <i class="fas fa-user-circle me-1"></i>
+                    <span th:if="${#authentication != null}">
+                        Sesión iniciada como: <strong th:text="${#authentication.name}">Usuario</strong>
+                    </span>
+                </span>
 
-    <!-- Ver Hojas -->
-    <a href="/hojasvida" class="btn btn-outline-primary me-2">
-        <i class="fas fa-list me-1"></i>Ver Hojas
-    </a>
+                <!-- Ver Hojas -->
+                <a href="/hojasvida" class="btn btn-outline-primary me-2">
+                    <i class="fas fa-list me-1"></i>Ver Hojas
+                </a>
 
-    <!-- Nueva Hoja -->
-    <a href="/registrarhojavida" class="btn btn-primary me-2">
-        <i class="fas fa-plus me-1"></i>Nueva Hoja
-    </a>
+                <!-- Nueva Hoja -->
+                <a href="/registrarhojavida" class="btn btn-primary me-2">
+                    <i class="fas fa-plus me-1"></i>Nueva Hoja
+                </a>
 
-    <!-- Botón de Cerrar Sesión -->
-    <a href="/logout" class="btn btn-danger">
-        <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
-    </a>
-</div>
-
+                <!-- Botón de Cerrar Sesión -->
+                <a href="/logout" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
+                </a>
+            </div>
         </div>
     </nav>
 
     <!-- Main Content -->
     <div class="container py-5">
-        <!-- Dashboard Stats -->
+        <!-- Sección de Tips/Consejos -->
         <div class="row mb-5 animate-fadeIn">
-            <div class="col-md-4 mb-3">
-                <div class="stat-card">
-                    <i class="fas fa-file-alt fa-3x mb-3"></i>
-                    <h3 th:text="${totalRegistros != null ? totalRegistros : '0'}" class="mb-1">0</h3>
-                    <p class="mb-0">Total de Hojas</p>
-                </div>
+            <div class="col-12 text-center mb-4">
+                <h2 class="fw-bold text-white">Consejos para una Hoja de Vida Exitosa</h2>
+                <p class="text-white">Mejora tus posibilidades con estos tips profesionales</p>
             </div>
             
-            <div class="col-md-4 mb-3">
-                <div class="stat-card" style="background: linear-gradient(135deg, #7209b7 0%, #560bad 100%);">
-                    <i class="fas fa-clock fa-3x mb-3"></i>
-                    <!-- CORREGIDO: Verificación adecuada de String -->
-                    <h3 th:if="${ultimoRegistro != null and !ultimoRegistro.isEmpty()}" 
-                        th:text="${ultimoRegistro}" 
-                        class="mb-1">-</h3>
-                    <h3 th:if="${ultimoRegistro == null or ultimoRegistro.isEmpty()}" 
-                        class="mb-1">N/A</h3>
-                    <p class="mb-0">Último Registro</p>
-                </div>
-            </div>
-            
-            <div class="col-md-4 mb-3">
-                <div class="stat-card" style="background: linear-gradient(135deg, #06d6a0 0%, #04a57a 100%);">
-                    <i class="fas fa-chart-line fa-3x mb-3"></i>
-                    <h3 class="mb-1">100%</h3>
-                    <p class="mb-0">Disponibilidad</p>
+            <div class="col-12">
+                <div class="tips-container">
+                    <!-- Tip 1 -->
+                    <div class="tip-card">
+                        <div class="tip-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h4 class="tip-title">Sé específico y conciso</h4>
+                        <p class="tip-content">Adapta tu hoja de vida para cada puesto al que apliques. Destaca las experiencias y habilidades más relevantes para el cargo específico.</p>
+                    </div>
+                    
+                    <!-- Tip 2 -->
+                    <div class="tip-card">
+                        <div class="tip-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4 class="tip-title">Usa verbos de acción</h4>
+                        <p class="tip-content">Inicia tus descripciones con verbos fuertes como "Dirigí", "Implementé", "Desarrollé" para mostrar proactividad y resultados.</p>
+                    </div>
+                    
+                    <!-- Tip 3 -->
+                    <div class="tip-card">
+                        <div class="tip-icon">
+                            <i class="fas fa-percent"></i>
+                        </div>
+                        <h4 class="tip-title">Incluye números y métricas</h4>
+                        <p class="tip-content">Cuantifica tus logros siempre que sea posible. Por ejemplo: "Aumenté las ventas en un 25%" o "Reduje costos en un 15%".</p>
+                    </div>
+                    
+                    <!-- Tip 4 -->
+                    <div class="tip-card">
+                        <div class="tip-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h4 class="tip-title">Revisa y corrige errores</h4>
+                        <p class="tip-content">Una hoja de vida con errores ortográficos o gramaticales puede ser descartada inmediatamente. Revisa minuciosamente o pide a alguien que lo haga por ti.</p>
+                    </div>
+                    
+                    <!-- Tip 5 -->
+                    <div class="tip-card">
+                        <div class="tip-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h4 class="tip-title">Mantén un formato limpio</h4>
+                        <p class="tip-content">Utiliza un diseño profesional, fácil de leer y con suficiente espacio en blanco. Idealmente, no más de 2 páginas para la mayoría de profesiones.</p>
+                    </div>
+                    
+                    <!-- Tip 6 -->
+                    <div class="tip-card">
+                        <div class="tip-icon">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <h4 class="tip-title">Destaca logros, no solo responsabilidades</h4>
+                        <p class="tip-content">En lugar de listar tus deberes, enfócate en lo que lograste en cada puesto. Los empleadores quieren ver resultados.</p>
+                    </div>
                 </div>
             </div>
         </div>
