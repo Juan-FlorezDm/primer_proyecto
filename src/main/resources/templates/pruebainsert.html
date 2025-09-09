@@ -1,0 +1,101 @@
+<form action="/pruebainsert_data" method="post" enctype="multipart/form-data" th:object="${hojaVida}">
+
+  <!-- Nombre -->
+  <label>Nombre Completo *</label>
+  <input type="text" th:field="*{nombre}" maxlength="50" required>
+  <div th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+  
+  <br>
+  <!-- Título -->
+  <label>Título Profesional *</label>
+  <input type="text" th:field="*{titulo}" maxlength="80" required>
+  <div th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></div>
+  
+ <!-- País y Ciudad -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">País *</label>
+                <select id="country" name="country" class="form-select" required onchange="loadCitiesAndDial()">
+                  <option value="">Seleccione un país</option>
+                  <th:block th:each="pais : ${paises}">
+                    <option th:value="${pais.country}" th:text="${pais.country}"></option>
+                  </th:block>
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Ciudad *</label>
+                <select id="city" name="city" class="form-select" required>
+                  <option value="">Seleccione una ciudad</option>
+                </select>
+              </div>
+            </div>
+  <!-- Teléfono -->
+  <label>Teléfono *</label>
+  <div class="input-group">
+    <span class="input-group-text" id="dialPrefix">+</span>
+    <input type="hidden" id="dialCode" name="dialCode">
+    <input type="text" name="numero" th:value="*{numero}" class="form-control" required>
+  </div>
+  <div th:if="${#fields.hasErrors('numero')}" th:text="${#fields.errors('numero')[0]}"></div>
+  
+  <br>
+  <!-- Email -->
+  <label>Email *</label>
+  <input type="email" th:field="*{email}" maxlength="100" required>
+  <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+  
+  <br>
+  <!-- Otros campos como descripción, experiencia, estudios, habilidades -->
+  <label>Resumen Profesional *</label>
+  <textarea th:field="*{descripcion}" rows="3" maxlength="500" required></textarea>
+  <div th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
+  
+  <br>
+  <label>Experiencia Laboral *</label>
+  <textarea th:field="*{experiencia}" rows="3" required></textarea>
+  <div th:if="${#fields.hasErrors('experiencia')}" th:errors="*{experiencia}"></div>
+  
+  <br>
+  <label>Formación Académica *</label>
+  <textarea th:field="*{estudios}" rows="3" maxlength="500" required></textarea>
+  <div th:if="${#fields.hasErrors('estudios')}" th:errors="*{estudios}"></div>
+  
+  <br>
+  <label>Habilidades *</label>
+  <input type="text" th:field="*{habilidades}" maxlength="200" required>
+  <div th:if="${#fields.hasErrors('habilidades')}" th:errors="*{habilidades}"></div>
+  
+  <br>
+  <button type="submit">Guardar Hoja de Vida</button>
+</form>
+
+
+<script>
+
+
+// Función para cargar ciudades
+async function loadCitiesAndDial() {
+      const country = document.getElementById("country").value;
+      if (!country) return;
+
+      const responseCities = await fetch(`/formulario/ciudades?pais=${encodeURIComponent(country)}`);
+      const cities = await responseCities.json();
+
+      const citySelect = document.getElementById("city");
+      citySelect.innerHTML = "<option value=''>Seleccione una ciudad</option>";
+      cities.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c;
+        opt.textContent = c;
+        citySelect.appendChild(opt);
+      });
+
+      const responseDial = await fetch(`/formulario/dialcode?pais=${encodeURIComponent(country)}`);
+      const dial = await responseDial.text();
+      document.getElementById("dialPrefix").textContent = dial || "+";
+      document.getElementById("dialCode").value = dial || "+";
+
+      updateCVPreview();
+    }
+
+</script>
